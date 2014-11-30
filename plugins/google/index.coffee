@@ -41,5 +41,5 @@ module.exports =
             return bot.reply nick, channel, "No suggestions found"
 
           top5 = result[1].slice 0, 5
-          top5 = top5.map (suggestion) -> "'#{c.red suggestion}'"
+          top5 = top5.map (suggestion) -> "\"#{query}#{c.teal suggestion[query.length..]}\""
           bot.reply nick, channel, top5.join ", "

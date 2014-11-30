@@ -1,5 +1,5 @@
 {
-  "name": "coinconvert",
+  "name": "coins",
   "version": "1.0.0",
   "description": "greenman module for cryptocurrency conversions",
   "main": "index.coffee",
@@ -9,6 +9,7 @@
   "author": "csauve",
   "license": "MIT",
   "dependencies": {
+    "irc-colors": "^1.1.0",
     "nogo": "^1.0.0",
     "request": "^2.47.0"
   }

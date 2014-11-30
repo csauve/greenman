@@ -20,7 +20,7 @@ module.exports =
 
     bot.any ///^#{prefix}help\s+(.+)$///i, (from, to, match) ->
       content = pages[match[1]]
-      bot.reply from, to, if content then content else "Help not found for \"#{match[1]}\". List plugins with #{prefix}help"
+      bot.reply from, to, if content then content else "Help not found for \"#{match[1]}\". List plugins with #{c.red "#{prefix}help"}"
 
     bot.any ///^#{prefix}help-search\s+(.+)$///i, (from, to, match) ->
       matches = (s) ->
@@ -29,10 +29,10 @@ module.exports =
 
       results = (page for page, content of pages when matches(page) or matches(content))
       if results.length
-        bot.reply from, to, "These plugins match #{c.teal match[1]}: #{results.join ", "}"
+        bot.reply from, to, "These plugins match #{c.red match[1]}: #{c.teal results.join ", "}"
       else
         bot.reply from, to, "No results found for #{c.teal match[1]}"
 
-    bot.any ///^#{prefix}prefix$///i, (from, to, match) ->
+    bot.any ///^#{prefix}help$///i, (from, to, match) ->
       results = (page for page of pages)
       bot.reply from, to, "Use #{c.red "#{prefix}help <plugin>"} to learn more about these plugins: #{c.teal results.join ", "}"

@@ -9,7 +9,7 @@ TITLE_REGEX = /(<\s*title[^>]*>(.+?)<\s*\/\s*title)>/g
 
 module.exports =
   help: (config) ->
-    "Provides page titles for other plugins and for URLs posted in the channel if #{c.teal title.enableAutoTitle} is configured"
+    "Provides page titles for other plugins and for URLs posted in the channel if #{c.teal "title.enableAutoTitle"} is configured"
 
   resolve: (url, callback) ->
     request.get url, (error, response, body) ->
@@ -24,7 +24,7 @@ module.exports =
       else
         callback new Error "No <title> tags found"
 
-  init: (bot, config) ->
+  init: (bot, config, plugins) ->
     enableAutoTitle = config.title?.enableAutoTitle
     if !enableAutoTitle then return
 
@@ -35,8 +35,8 @@ module.exports =
         title: (callback) ->
           module.exports.resolve url, callback
         short: (callback) ->
-          if modules.bitly
-            return modules.bitly.shorten url, callback
+          if plugins.bitly
+            return plugins.bitly.shorten url, callback
           callback null, null
 
       async.parallel tasks, (err, results) ->

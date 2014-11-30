@@ -19,7 +19,7 @@ module.exports =
       cooldown: 60
 
     bot.any ///^#{config.global.prefix}bing\s+(.+)$///i, (from, to, match) ->
-      limiter nick,
+      limiter from,
         no: (strikes) -> if strikes == 1 then bot.reply from, to, "Chill out, bro. Limit bing queries to 0.3 per second"
         go: () ->
           auth = new Buffer [config.bing.accountKey, config.bing.accountKey].join ':'

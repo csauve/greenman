@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "html-entities": "^1.1.1",
+    "irc-colors": "^1.1.0",
     "request": "^2.47.0"
   }
 }

@@ -7,7 +7,7 @@ module.exports =
     "#{c.red "#{config.global.prefix}roll <dice>"}: Roll <dice> like #{c.teal 'd20'}, #{c.teal '2d6+1'}, #{c.teal '5'}"
 
   init: (bot, config, modules) ->
-    bot.any ///^#{config.global.prefix}d\s+(.+)$///i, (from, to, match) ->
+    bot.any ///^#{config.global.prefix}roll\s+(.+)$///i, (from, to, match) ->
       input = match[1]
 
       if /^\d+$/.test input

@@ -1,5 +1,5 @@
 {
-  "name": "halo-quotes",
+  "name": "chief",
   "version": "1.0.0",
   "description": "greenman module to randomly post halo quotes",
   "main": "index.coffee",
@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "cson": "^1.6.1",
+    "irc-colors": "^1.1.0",
     "nogo": "^1.0.0"
   }
 }

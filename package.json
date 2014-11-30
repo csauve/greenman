@@ -16,14 +16,15 @@
   "dependencies": {
     "bing": "file:plugins/bing",
     "bitly": "file:plugins/bitly",
-    "coinconvert": "file:plugins/coinconvert",
-    "gm-roll": "file:plugins/gm-roll",
+    "coins": "file:plugins/coins",
+    "gb-roll": "file:plugins/gb-roll",
     "google": "file:plugins/google",
     "halo-quotes": "file:plugins/chief",
     "halo3": "file:plugins/halo3",
     "hash": "file:plugins/hash",
     "help": "file:plugins/help",
     "hi": "file:plugins/hi",
-    "ignore": "file:plugins/ignore"
+    "ignore": "file:plugins/ignore",
+    "title": "file:plugins/title"
   }
 }
