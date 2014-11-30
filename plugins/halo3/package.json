@@ -1,0 +1,11 @@
+{
+  "name": "halo3",
+  "version": "1.0.0",
+  "description": "Kicks anyone saying \"halo 3\"",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csauve",
+  "license": "MIT"
+}

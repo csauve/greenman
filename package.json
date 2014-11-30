@@ -1,0 +1,29 @@
+{
+  "name": "gb-plugins-modacity",
+  "version": "1.0.0",
+  "description": "Greenbot plugins used in the #modacity channel",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/csauve/gb-plugins-modacity.git"
+  },
+  "author": "csauve",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/csauve/gb-plugins-modacity/issues"
+  },
+  "homepage": "https://github.com/csauve/gb-plugins-modacity",
+  "dependencies": {
+    "bing": "file:plugins/bing",
+    "bitly": "file:plugins/bitly",
+    "coinconvert": "file:plugins/coinconvert",
+    "gm-roll": "file:plugins/gm-roll",
+    "google": "file:plugins/google",
+    "halo-quotes": "file:plugins/chief",
+    "halo3": "file:plugins/halo3",
+    "hash": "file:plugins/hash",
+    "help": "file:plugins/help",
+    "hi": "file:plugins/hi",
+    "ignore": "file:plugins/ignore"
+  }
+}

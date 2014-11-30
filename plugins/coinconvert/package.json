@@ -1,0 +1,15 @@
+{
+  "name": "coinconvert",
+  "version": "1.0.0",
+  "description": "greenman module for cryptocurrency conversions",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csauve",
+  "license": "MIT",
+  "dependencies": {
+    "nogo": "^1.0.0",
+    "request": "^2.47.0"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "bitly",
+  "version": "1.0.0",
+  "description": "greenman module for link shortening",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csauve",
+  "license": "MIT",
+  "dependencies": {
+    "node-bitlyapi": "^0.4.0",
+    "nogo": "^1.0.0"
+  }
+}

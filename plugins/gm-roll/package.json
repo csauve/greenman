@@ -1,0 +1,14 @@
+{
+  "name": "gm-roll",
+  "version": "1.0.0",
+  "description": "greenman module for rolling random numbers",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csauve",
+  "license": "MIT",
+  "dependencies": {
+    "roll": "^1.0.0"
+  }
+}

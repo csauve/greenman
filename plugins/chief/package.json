@@ -1,0 +1,15 @@
+{
+  "name": "halo-quotes",
+  "version": "1.0.0",
+  "description": "greenman module to randomly post halo quotes",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csauve",
+  "license": "MIT",
+  "dependencies": {
+    "cson": "^1.6.1",
+    "nogo": "^1.0.0"
+  }
+}
