@@ -25,6 +25,8 @@
     "help": "file:plugins/help",
     "hi": "file:plugins/hi",
     "ignore": "file:plugins/ignore",
-    "title": "file:plugins/title"
+    "title": "file:plugins/title",
+    "wolfram": "file:plugins/wolfram",
+    "caremail": "file:plugins/caremail"
   }
 }
