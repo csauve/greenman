@@ -1,6 +1,24 @@
 c = require "irc-colors"
 Datastore = require "nedb"
 moment = require "moment"
+dehumanize = require "dehumanize-date"
+momentNat = require "moment-natural"
+
+parseDate = (s) ->
+  momentResult = moment s
+  dehumanizeResult = dehumanize s
+  naturalResult = momentNat.natural s
+
+  return naturalResult.valueOf() if naturalResult.isValid()
+  return moment(dehumanizeResult).valueOf() if dehumanizeResult
+  return momentResult.valueOf() if momentResult.isValid()
+  undefined
+
+parseDuration = (s) ->
+  dmatch = match[2].match /(\d+(?:\.\d+)?)\s+(.+)/i
+  if dmatch
+    (moment().add Number(dmatch[1]), dmatch[2]).valueOf()
+  else undefined
 
 module.exports =
   help: (config) -> """
@@ -48,22 +66,23 @@ module.exports =
         message: match[4]
 
       mail.deliver = if match[1] == "in"
-        dmatch = match[2].match /(\d+(?:\.\d+)?)\s+(.+)/i
-        (moment().add Number(dmatch[1]), dmatch[2]).valueOf()
+        parseDuration match[2]
       else if match[1] == "at" or match[1] == "on"
-        moment(match[2]).valueOf()
+        parseDate match[2]
       else undefined
 
-      remember mail, (err) ->
+      if mail.deliver == undefined and match[1]
+        return bot.reply nick, channel, "I don't understand \"#{c.teal match[2]}\"（°々。）"
+
+      remember mail, (err, newDoc) ->
         if err
           console.error err.stack
           return bot.reply nick, channel, "I dun goofed. Tell #{mail.recipient} yourself"
         response = if mail.recipient == nick
           "I'll let you know"
-        else if mail.recipient == "jcap"
-          "I'll put that in his malebox"
         else
           "I'll pass that on"
+        if newDoc.created != newDoc.deliver then response += " #{moment(newDoc.deliver).fromNow()}"
         bot.reply nick, channel, response
 
     bot.msg (nick, channel) ->
