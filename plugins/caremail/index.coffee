@@ -1,4 +1,4 @@
-c = require "irc-colors"
+ c = require "irc-colors"
 Datastore = require "nedb"
 moment = require "moment"
 dehumanize = require "dehumanize-date"

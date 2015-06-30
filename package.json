@@ -27,6 +27,7 @@
     "ignore": "file:plugins/ignore",
     "title": "file:plugins/title",
     "wolfram": "file:plugins/wolfram",
-    "caremail": "file:plugins/caremail"
+    "caremail": "file:plugins/caremail",
+		"mp3": "file:plugins/mp3"
   }
 }
