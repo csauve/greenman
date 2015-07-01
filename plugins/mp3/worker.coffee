@@ -16,9 +16,10 @@ module.exports =
     it for it of downloaders
 
   scheduleCleanups: (directory, expiryMinutes) ->
-    cleanup = ->
-      findRemoveSync directory, {age: {seconds: expirySeconds}}
-    setInterval cleanup, 60000
+    do (expiryMinutes) ->
+      cleanup = ->
+        findRemoveSync directory, {age: {seconds: expirySeconds}}
+      setInterval cleanup, 60000
 
   # calls back with `error` and `filename`
   getMedia: (url, metaArgs, mediaDir, callback) ->
