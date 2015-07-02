@@ -63,7 +63,7 @@ downloadAndResizeCover = (artUrl, destFile, cb) ->
   writeStream.on "finish", -> cb()
 
 applyMetaData = (mp3FilePath, metadata, artPath, callback) ->
-  metaCopy = _.pick metadata, (key) -> metadata[key] and key in ["artist", "title", "year", "genre", "album"]
+  metaCopy = _.pick metadata, (val, key, o) -> val and key in ["artist", "title", "year", "genre", "album"]
   id3Meta = new id3.Meta(metaCopy, (if artPath then [new id3.Image(artPath)] else null))
   new id3.Writer().setFile(new id3.File(mp3FilePath)).write id3Meta, (err) ->
     callback err
