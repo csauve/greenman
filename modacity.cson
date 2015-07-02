@@ -1,0 +1,59 @@
+greenbot:
+  nick: "greenman"
+  server: "irc.gamesurge.net"
+  options:
+    floodProtection: true
+    floodProtectionDelay: 1000
+    messageSplit: 500
+    channels: [
+      "#modacity"
+    ]
+  pluginsDir: "/home/greenbot/gb-plugins-modacity/node_modules"
+  plugins: [
+    "ignore"
+    "bing"
+    "bitly"
+    "chief"
+    "coins"
+    "gb-roll"
+    "google"
+    #"halo3"
+    "hash"
+    "help"
+    "hi"
+    "title"
+    "wolfram"
+    #"caremail"
+    "mp3"
+  ]
+
+global:
+  prefix: "!"
+
+ignore:
+  nicks: [
+    "ChanServ"
+    "DEEbot"
+  ]
+
+title:
+  enableAutoTitle: false
+
+bing:
+  accountKey: "F489iHkBaa8SuUJiEBXKmGelJOaKKq5sFj+X/9wBlLA"
+
+bitly:
+  accessToken: "61e3ec8917496af375fee4621ac08ec2b8daeacb"
+
+wolfram:
+  appId: "KRWAPT-KEQ3VJQ6UY"
+
+caremail:
+  dbPath: "/home/greenbot/gb-plugins-modacity/plugins/caremail/mail.db"
+
+mp3:
+  expirySeconds: 3600 #1 hour
+  maxLengthSeconds: 480
+  baseDownloadUrl: "http://files.t3hz0r.com/greenbot-media"
+  mediaDir: "/srv/www/files.t3hz0r.com/greenbot-media"
+  tokenRefillRate: 0.05
