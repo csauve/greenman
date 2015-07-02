@@ -26,6 +26,8 @@ module.exports =
     if not downloader then return callback new Error "No downloader supports URL #{url}"
 
     downloader.getMedia url, mediaDir, (err, foundMeta, mp3FilePath) ->
+      if err then return callback err
+
       # build finalized metadata
       metaResult = _.defaults metaArgs, foundMeta
       nameMatch = metaResult.name?.match /(.+)\s+-\s+(.+)/i

@@ -29,7 +29,7 @@ module.exports =
             return
 
           bot.reply nick, channel, "Hang on, I'll convert that for you..."
-          mediaWorker.getMedia match[1], metaParams, config.mp3.mediaDir, (err, filename) ->
+          mediaWorker.getMedia match[1], metaParams, config.mp3, (err, filename) ->
             if err then return bot.reply nick, channel, "Failed to fetch media: #{c.red err.message}"
             downloadUrl = "#{path.join config.mp3.baseDownloadUrl, encodeURIComponent(filename)}.mp3"
             bot.reply nick, channel, "Conversion complete: #{c.underline.red downloadUrl}"

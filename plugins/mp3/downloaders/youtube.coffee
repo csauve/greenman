@@ -12,14 +12,18 @@ module.exports =
     /youtube\.com/i.test url
 
   # given a URL, calls back with `error`, `metadata`, and `filename`
-  getMedia: (url, mediaDir, callback) ->
+  getMedia: (url, opts, callback) ->
     ytdl.getInfo url, {downloadUrl: true}, (err, info) ->
       if err then return callback err
 
-      filePath = path.join mediaDir, sanitizeFilename(info.title)
+      filePath = path.join opts.mediaDir, sanitizeFilename(info.title)
       meta =
         name: info.title
         artUrl: info.iurlmaxres or info.iurlsd or info.iurlhq or info.iurlmq or info.iurl
+
+      # reject videos that are too long
+      if info.length_seconds > opts.maxLengthSeconds
+        return callback new Error("The video is too long. The configured maximum length is #{opts.maxLengthSeconds}s")
 
       # find best quality mp4 container to download
       hqFormat = findHqFormat info.formats
