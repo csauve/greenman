@@ -28,6 +28,6 @@
     "title": "file:plugins/title",
     "wolfram": "file:plugins/wolfram",
     "caremail": "file:plugins/caremail",
-		"mp3": "file:plugins/mp3"
+    "mp3": "file:plugins/mp3"
   }
 }

@@ -3,6 +3,8 @@ request = require "request"
 xml2js = require "xml2js"
 rateLimit = require "nogo"
 
+# hello!
+
 module.exports =
   help: (config) ->
     "#{c.red "#{config.global.prefix}wa <query>"}: Returns Wolfram Alpha results"
