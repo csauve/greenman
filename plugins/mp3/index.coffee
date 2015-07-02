@@ -7,16 +7,16 @@ mediaWorker = require "./worker"
 path = require "path"
 CSON = require "cson"
 
-limiter = rateLimit
-  rate: 0.1
-  burst: 1
-
 module.exports =
   help: (config) -> """
     #{c.red "#{config.global.prefix}mp3 <url> [metadata]"}: Converts the online media into an mp3 file with metadata and album art if available. Metadadata can be supplied manually by CSON argument. Supported downloaders are: #{c.teal mediaWorker.downloaderList().join ", "}
   """
 
   init: (bot, config) ->
+    limiter = rateLimit
+      rate: config.mp3.tokenRefillRate
+      burst: 1
+
     mediaWorker.scheduleCleanups config.mp3.mediaDir, config.mp3.expirySeconds
 
     bot.msg ///#{config.global.prefix}mp3\s+(\S+)(?:\s+(.+))?///, (nick, channel, match) ->

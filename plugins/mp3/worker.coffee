@@ -21,11 +21,11 @@ module.exports =
     setInterval cleanup, 60000
 
   # calls back with `error` and `filename`
-  getMedia: (url, metaArgs, mediaDir, callback) ->
+  getMedia: (url, metaArgs, config, callback) ->
     downloader = mod for name, mod of downloaders when mod.canDownload url
     if not downloader then return callback new Error "No downloader supports URL #{url}"
 
-    downloader.getMedia url, mediaDir, (err, foundMeta, mp3FilePath) ->
+    downloader.getMedia url, config, (err, foundMeta, mp3FilePath) ->
       if err then return callback err
 
       # build finalized metadata
@@ -40,11 +40,11 @@ module.exports =
 
       renameAndComplete = (err) ->
         if err then return callback err
-        fs.renameSync mp3FilePath, "#{path.join mediaDir, filename}.mp3"
+        fs.renameSync mp3FilePath, "#{path.join config.mediaDir, filename}.mp3"
         callback null, filename
 
       if metaResult.artUrl
-        artPath = "#{path.join mediaDir, filename}.jpg"
+        artPath = "#{path.join config.mediaDir, filename}.jpg"
         downloadAndResizeCover metaResult.artUrl, artPath, (err) ->
           if err then return callback err
           applyMetaData mp3FilePath, metaResult, artPath, renameAndComplete
