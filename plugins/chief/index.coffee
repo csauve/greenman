@@ -6,7 +6,7 @@ path = require "path"
 QUOTES_FILE = path.join __dirname, "masterchief.cson"
 MESSAGE_CHANCE = 1 / 1000
 
-masterchief = CSON.parseFileSync QUOTES_FILE
+masterchief = CSON.parseFile QUOTES_FILE
 
 commandLimiter = rateLimit
   rate: 0.3
