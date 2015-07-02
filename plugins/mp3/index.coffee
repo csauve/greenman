@@ -17,7 +17,7 @@ module.exports =
   """
 
   init: (bot, config) ->
-    mediaWorker.scheduleCleanups config.mp3.mediaDir, config.mp3.expiryMinutes
+    mediaWorker.scheduleCleanups config.mp3.mediaDir, config.mp3.expirySeconds
 
     bot.msg ///#{config.global.prefix}mp3\s+(\S+)(?:\s+(.+))?///, (nick, channel, match) ->
       limiter nick,
