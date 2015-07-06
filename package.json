@@ -16,18 +16,19 @@
   "dependencies": {
     "bing": "file:plugins/bing",
     "bitly": "file:plugins/bitly",
+    "caremail": "file:plugins/caremail",
     "coins": "file:plugins/coins",
     "gb-roll": "file:plugins/gb-roll",
     "google": "file:plugins/google",
+    "greenbot": "^1.0.0",
     "halo-quotes": "file:plugins/chief",
     "halo3": "file:plugins/halo3",
     "hash": "file:plugins/hash",
     "help": "file:plugins/help",
     "hi": "file:plugins/hi",
     "ignore": "file:plugins/ignore",
+    "mp3": "file:plugins/mp3",
     "title": "file:plugins/title",
-    "wolfram": "file:plugins/wolfram",
-    "caremail": "file:plugins/caremail",
-    "mp3": "file:plugins/mp3"
+    "wolfram": "file:plugins/wolfram"
   }
 }
