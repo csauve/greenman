@@ -2,7 +2,7 @@ stage=$1
 
 case $stage in
   pre )
-    pm2 stop greenbot
+    forever stop node_modules/greenbot/bin/greenbot.js
     ;;
   deploy )
     git pull
@@ -10,6 +10,6 @@ case $stage in
     npm install
     ;;
   post )
-    pm2 start node_modules/greenbot/bin/greenbot.js --node-args "modacity.cson"
+    forever start node_modules/greenbot/bin/greenbot.js modacity.cson
     ;;
 esac
