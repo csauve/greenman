@@ -20,7 +20,7 @@
     "coins": "file:plugins/coins",
     "gb-roll": "file:plugins/gb-roll",
     "google": "file:plugins/google",
-    "greenbot": "^1.0.0",
+    "greenbot": "^1.0.1",
     "halo-quotes": "file:plugins/chief",
     "halo3": "file:plugins/halo3",
     "hash": "file:plugins/hash",
