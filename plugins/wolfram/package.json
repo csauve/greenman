@@ -9,7 +9,7 @@
   "author": "csauve",
   "license": "MIT",
   "dependencies": {
-    "irc-colors": "^1.1.0",
+    "irc-colors": "1.1.0",
     "nogo": "^1.0.0",
     "request": "^2.53.0",
     "xml2js": "^0.4.4"

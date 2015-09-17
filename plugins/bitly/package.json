@@ -9,7 +9,7 @@
   "author": "csauve",
   "license": "MIT",
   "dependencies": {
-    "irc-colors": "^1.1.0",
+    "irc-colors": "1.1.0",
     "node-bitlyapi": "^0.4.0",
     "nogo": "^1.0.0"
   }

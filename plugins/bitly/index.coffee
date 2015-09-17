@@ -19,11 +19,11 @@ module.exports =
     "#{c.red "#{config.global.prefix}shorten <url>"}: Shorten links with bitly"
 
   shorten: (longUrl, callback) ->
-	  if !longUrl.match /^https?:\/\/.+/i
+    if !longUrl.match /^https?:\/\/.+/i
       longUrl = "http://#{longUrl}"
-    
+
     params =
-      longUrl: longUrl
+      longUrl: longUrl.trim()
       format: "txt"
       domain: "j.mp"
 

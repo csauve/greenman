@@ -9,6 +9,6 @@
   "author": "csauve",
   "license": "MIT",
   "dependencies": {
-    "irc-colors": "^1.2.0"
+    "irc-colors": "1.1.0"
   }
 }
