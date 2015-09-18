@@ -54,6 +54,6 @@ caremail:
 mp3:
   expirySeconds: 3600 #1 hour
   maxLengthSeconds: 480
-  baseDownloadUrl: "http://files.t3hz0r.com/greenbot-media"
-  mediaDir: "/srv/www/files.t3hz0r.com/greenbot-media"
+  baseDownloadUrl: "http://files.t3hz0r.com/greenbot/"
+  mediaDir: "/home/greenbot/www"
   tokenRefillRate: 0.05
