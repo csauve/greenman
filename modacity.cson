@@ -25,6 +25,7 @@ greenbot:
     "wolfram"
     #"caremail"
     "mp3"
+    "gb-dectalk"
   ]
 
 global:
@@ -57,3 +58,7 @@ mp3:
   baseDownloadUrl: "http://files.t3hz0r.com/greenbot/"
   mediaDir: "/home/greenbot/www"
   tokenRefillRate: 0.05
+
+dectalk:
+  localPort: 8902
+  publicUrl: "http://talk.t3hz0r.com"

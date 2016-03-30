@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Modacity DECTalk</title>
+  <script src="/static/speakClient.js"></script>
+  <script src="/static/socket.io.js"></script>
+</head>
+<body>
+  <h1 id="text"></h1>
+  <div id="audio"></div>
+  <script>
+    var server = "{{publicUrl}}";
+    var socket = io(server);
+    socket.on("audio", function(data) {
+      speak(data.text);
+      document.getElementById("text").innerText = data.nick + ": " + data.text;
+    });
+  </script>
+</body>
+</html>

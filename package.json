@@ -18,6 +18,7 @@
     "bitly": "file:plugins/bitly",
     "caremail": "file:plugins/caremail",
     "coins": "file:plugins/coins",
+    "gb-dectalk": "file:plugins/gb-dectalk",
     "gb-roll": "file:plugins/gb-roll",
     "google": "file:plugins/google",
     "greenbot": "1.0.3",
