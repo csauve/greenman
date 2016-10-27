@@ -13,12 +13,12 @@ setupServer = (config) ->
   server = http.createServer app
   io = sio server
 
-  app.use "/audio", serveStatic(config.dectalk.audioDir or "/tmp")
+  app.use "/audio", serveStatic(config.audioDir or "/tmp")
   app.use "/static", serveStatic(__dirname + "/static")
   app.get "/", (req, res) ->
-    res.send template publicUrl: config.dectalk.publicUrl
+    res.send template publicUrl: config.publicUrl
 
-  port = config.dectalk.localPort or 8902
+  port = config.localPort or 8902
   server.listen port
   console.log "TTS app served at " + port
 
@@ -27,10 +27,10 @@ setupServer = (config) ->
 
 module.exports =
   help: (config) ->
-    "Visit #{c.red "#{config.dectalk.publicUrl}"} for live playback of the channel"
+    "Visit #{c.red "#{config.talk.publicUrl}"} for live playback of the channel"
 
-  init: (bot, config, modules) ->
-    io = setupServer config
+  init: (bot, config) ->
+    io = setupServer config.talk
 
     bot.msg (nick, channel, text) ->
       io.clients (err, clients) ->

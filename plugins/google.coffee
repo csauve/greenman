@@ -3,6 +3,8 @@ rateLimit = require "nogo"
 c = require "irc-colors"
 
 module.exports =
+  name: "google"
+
   help: (config) -> """
     #{c.red "#{config.global.prefix}g <query>"}: Gets the first Google result for a query
     #{c.red "#{config.global.prefix}complete <query>"}: Get the top 5 Google auto-complete results

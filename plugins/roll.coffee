@@ -3,6 +3,8 @@ roll = new Roll()
 c = require "irc-colors"
 
 module.exports =
+  name: "roll"
+
   help: (config) ->
     "#{c.red "#{config.global.prefix}roll <dice>"}: Roll <dice> like #{c.teal 'd20'}, #{c.teal '2d6+1'}, #{c.teal '5'}"
 

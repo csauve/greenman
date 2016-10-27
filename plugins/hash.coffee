@@ -1,13 +1,11 @@
 c = require "irc-colors"
 crypto = require "crypto"
-rateLimit = require "nogo"
 
 ALG_PER_MSG = 20
 
-limiter = rateLimit
-  rate: 0.5
-
 module.exports =
+  name: "hash"
+
   help: (config) ->
     algs = crypto.getHashes()
     # workaround for message parts being missed by gamesurge when chunked
@@ -25,10 +23,8 @@ module.exports =
     prefix = config.global.prefix
 
     bot.any ///^#{prefix}hash\s+(\w+)\s+(.+)$///i, (from, to, match) ->
-      limiter from,
-        go: () ->
-          try
-            hash = crypto.createHash(match[1]).update(match[2]).digest "hex"
-            bot.reply from, to, c.red hash
-          catch error
-            bot.reply from, to, "Failed to hash: #{error}"
+      try
+        hash = crypto.createHash(match[1]).update(match[2]).digest "hex"
+        bot.reply from, to, c.red hash
+      catch error
+        bot.reply from, to, "Failed to hash: #{error}"

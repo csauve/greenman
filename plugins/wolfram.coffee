@@ -3,15 +3,15 @@ request = require "request"
 xml2js = require "xml2js"
 rateLimit = require "nogo"
 
-# hello!
+limiter = rateLimit {rate: 0.3, strikes: 5, cooldown: 20}
 
 module.exports =
+  name: "wolfram"
+
   help: (config) ->
     "#{c.red "#{config.global.prefix}wa <query>"}: Returns Wolfram Alpha results"
 
   init: (bot, config) ->
-    limiter = rateLimit {rate: 0.3, strikes: 5, cooldown: 20}
-
     bot.any ///^#{config.global.prefix}wa\s+(.+)$///i, (from, to, match) ->
       limiter from, go: ->
         url = "http://api.wolframalpha.com/v2/query?appid=#{config.wolfram.appId}&input=#{match[1]}&format=plaintext"

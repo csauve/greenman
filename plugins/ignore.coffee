@@ -1,6 +1,8 @@
 c = require "irc-colors"
 
 module.exports =
+  name: "ignore"
+
   help: (config) -> """
     Ignore input from certain nicks. Currently configured: #{c.teal config.ignore?.nicks?.join ", "}
   """
@@ -10,4 +12,4 @@ module.exports =
 
     bot.use "message", (from, to, text, message, next) ->
       if from not in ignoreList
-        next from, to, text, message
+        next from, to, text, message, next

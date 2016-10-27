@@ -5,6 +5,8 @@ c = require "irc-colors"
 MAX_LIST_SIZE = 15
 
 module.exports =
+  name: "coins"
+
   help: (config) -> """
     Convert between crypto-currencies using #{c.underline "http://cryptocoincharts.info"}
     #{c.red "#{config.global.prefix}coin <amount> <source currency ID> to <dest currency ID>"}: Convert between trading pairs

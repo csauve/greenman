@@ -8,6 +8,8 @@ path = require "path"
 CSON = require "cson"
 
 module.exports =
+  name: "mp3"
+
   help: (config) -> """
     #{c.red "#{config.global.prefix}mp3 <url> [metadata]"}: Converts the online media into an mp3 file with metadata and album art if available. Metadadata can be supplied manually by CSON argument. Supported downloaders are: #{c.teal mediaWorker.downloaderList().join ", "}
   """
@@ -21,7 +23,7 @@ module.exports =
 
     bot.msg ///#{config.global.prefix}mp3\s+(\S+)(?:\s+(.+))?///, (nick, channel, match) ->
       limiter nick,
-        no: -> bot.reply nick, channel, "Ask me later, I'm busy (◡ ‿ ◡ ✿)"
+        no: -> bot.reply nick, channel, "Ask me later, I'm busy (- ‿ - ✿)"
         go: ->
           metaParams = if match[2] then CSON.parse match[2] else {}
           if metaParams instanceof Error
