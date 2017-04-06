@@ -11,5 +11,6 @@ module.exports = [
   require "./wolfram"
   require "./talk"
   require "./google"
+  require "./die"
   #require "./mp3" #TODO: implement tmp file storage
 ]

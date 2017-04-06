@@ -27,7 +27,7 @@ module.exports =
           url = response.request.href
           bitly.shorten url, (error, shortUrl) ->
             if error then throw error
-            bot.reply nick, channel, c.underline.red shortUrl
+            bot.reply nick, channel, "#{c.underline.teal url} - #{c.underline.red shortUrl}"
 
     bot.msg ///^#{prefix}complete\s+(.+)$///, (nick, channel, match) ->
       limiter nick, go: () ->
