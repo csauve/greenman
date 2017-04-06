@@ -1,6 +1,7 @@
 request = require "request"
 rateLimit = require "nogo"
 c = require "irc-colors"
+bitly = require "./bitly"
 
 module.exports =
   name: "google"
@@ -10,7 +11,7 @@ module.exports =
     #{c.red "#{config.global.prefix}complete <query>"}: Get the top 5 Google auto-complete results
   """
 
-  init: (bot, config, plugins) ->
+  init: (bot, config) ->
     prefix = config.global.prefix
 
     limiter = rateLimit
@@ -24,14 +25,9 @@ module.exports =
         request.get "http://www.google.com/search?q=#{query}&btnI", (error, response, body) ->
           if error then throw error
           url = response.request.href
-
-          # try to get the title
-          if plugins.title
-            plugins.title.resolve url, (error, title) ->
-              if !error and title
-                bot.reply nick, channel, "#{c.underline.red url} [ #{c.teal title} ]"
-          else
-            bot.reply nick, channel, c.underline.red url
+          bitly.shorten url, (error, shortUrl) ->
+            if error then throw error
+            bot.reply nick, channel, c.underline.red shortUrl
 
     bot.msg ///^#{prefix}complete\s+(.+)$///, (nick, channel, match) ->
       limiter nick, go: () ->

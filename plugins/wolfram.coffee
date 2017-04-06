@@ -14,7 +14,8 @@ module.exports =
   init: (bot, config) ->
     bot.any ///^#{config.global.prefix}wa\s+(.+)$///i, (from, to, match) ->
       limiter from, go: ->
-        url = "http://api.wolframalpha.com/v2/query?appid=#{config.wolfram.appId}&input=#{match[1]}&format=plaintext"
+        query = encodeURIComponent(match[1])
+        url = "http://api.wolframalpha.com/v2/query?appid=#{config.wolfram.appId}&input=#{query}&format=plaintext"
 
         request.get url, (error, response, body) ->
           if error then throw error
@@ -24,8 +25,13 @@ module.exports =
             result = response.queryresult
 
             if result.$.success == "true"
-              interpretation = result.pod[0].subpod[0].plaintext
-              answer = result.pod[1].subpod[0].plaintext[0].split("\n")[0]
-              bot.reply from, to, "#{c.teal interpretation}: #{c.red answer}"
+              interpretation = result.pod[0].subpod[0].plaintext[0].split("\n").join(" ")
+              answerLines = result.pod[1].subpod[0].plaintext[0].split("\n")
+              if answerLines.length == 1
+                bot.reply from, to, "#{c.teal interpretation}: #{c.red answerLines[0]}"
+              else
+                bot.reply from, to, "#{c.teal interpretation}:"
+                for answerLine in answerLines
+                  bot.say to, "#{c.red answerLine}"
             else
               bot.reply from, to, "WA responsed with error#{if result.tips then ":#{result.tips[0].tip[0].$.text}" else ""}"

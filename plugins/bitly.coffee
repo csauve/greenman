@@ -17,6 +17,8 @@ shorten = (longUrl, callback) ->
 
 
 module.exports =
+  shorten: shorten
+
   name: "bitly"
 
   help: (config) ->
