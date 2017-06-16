@@ -1,6 +1,5 @@
 FFmpeg = require "fluent-ffmpeg"
 request = require "request"
-fs = require "fs"
 ytdl = require "ytdl-core"
 FFmpeg = require "fluent-ffmpeg"
 sanitizeFilename = require "sanitize-filename"
@@ -11,15 +10,16 @@ module.exports =
   canDownload: (url) ->
     /youtube\.com/i.test url
 
-  # given a URL, calls back with `error`, `metadata`, and `filename`
+  # given a URL, calls back with `error`, `metadata`, and `mp3Buffer`
   getMedia: (url, opts, callback) ->
     ytdl.getInfo url, {downloadUrl: true}, (err, info) ->
       if err then return callback err
 
-      filePath = path.join opts.mediaDir, sanitizeFilename(info.title)
+      nameMatch = info.title?.match /(.+)\s+-\s+(.+)/i
       meta =
-        name: info.title
-        artUrl: info.iurlmaxres or info.iurlsd or info.iurlhq or info.iurlmq or info.iurl
+        artist: nameMatch?[1]
+        title: nameMatch?[2]
+        artUrl: "http://img.youtube.com/vi/#{info.vid}/maxresdefault.jpg"
 
       # reject videos that are too long
       if info.length_seconds > opts.maxLengthSeconds
@@ -29,18 +29,22 @@ module.exports =
       hqFormat = findHqFormat info.formats
       if not hqFormat then return callback new Error("Could not find a suitable format. Try another video")
 
-      writeStream = fs.createWriteStream "#{filePath}.mp4"
-      request(hqFormat.url).pipe writeStream
+      console.log "Requesting high quality stream from #{hqFormat.url}"
+      inputStream = request(hqFormat.url)
+      outBuf = new Buffer(0)
 
-      writeStream.on "error", callback
-      writeStream.on "finish", ->
-        new FFmpeg("#{filePath}.mp4")
-          .audioCodec "libmp3lame"
-          .format "mp3"
-          .on "error", callback
-          .on "end", ->
-            callback null, meta, "#{filePath}.mp3"
-          .save "#{filePath}.mp3"
+      console.log "Encoding mp4 video to mp3 audio"
+      command = new FFmpeg(inputStream)
+        .audioCodec "libmp3lame"
+        .format "mp3"
+        .on "error", callback
+        .on "end", ->
+          console.log "Encoding completed, getting buffer"
+          callback null, meta, outBuf
+
+      ffstream = command.pipe()
+      ffstream.on "data", (data) ->
+        outBuf = Buffer.concat([outBuf, data])
 
 
 findHqFormat = (formats) ->

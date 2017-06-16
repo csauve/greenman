@@ -1,71 +1,72 @@
-fs = require "fs"
 graphicsMagick = require "gm"
 sanitizeFilename = require "sanitize-filename"
-id3 = require "id3-writer"
-path = require "path"
+ID3Writer = require "browser-id3-writer"
 findRemoveSync = require "find-remove"
 _ = require "underscore"
-md5 = require "MD5"
 request = require "request"
+uuid = require "uuid/v4"
 
 downloaders =
   youtube: require "./downloaders/youtube"
 
+s3Storage = require "./storage/s3"
+
+metadataKeys = ["artist", "title", "year", "genre", "album", "artUrl"]
+
 module.exports =
-  downloaderList: ->
-    it for it of downloaders
+  supportedMetadata: metadataKeys
+  supportedDownloaders: (it for it of downloaders)
+  # calls back with `error` and `downloadUrl`
+  getMedia: (config, mediaUrl, argMetadata, callback) ->
+    downloader = {mod: mod, name: name} for name, mod of downloaders when mod.canDownload mediaUrl
+    if not downloader then return callback new Error("No downloader supports the URL")
 
-  scheduleCleanups: (directory, expirySeconds) ->
-    cleanup = ->
-      findRemoveSync directory, {age: {seconds: expirySeconds}}
-    setInterval cleanup, 60000
-
-  # calls back with `error` and `filename`
-  getMedia: (url, metaArgs, config, callback) ->
-    downloader = mod for name, mod of downloaders when mod.canDownload url
-    if not downloader then return callback new Error "No downloader supports URL #{url}"
-
-    downloader.getMedia url, config, (err, foundMeta, mp3FilePath) ->
+    console.log "Using downloader #{downloader.name} for url #{mediaUrl}"
+    downloader.mod.getMedia mediaUrl, config.mp3, (err, foundMetadata, mp3Buffer) ->
       if err then return callback err
+      metadata = _.defaults argMetadata, foundMetadata
 
-      # build finalized metadata
-      metaResult = _.defaults metaArgs, foundMeta
-      nameMatch = metaResult.name?.match /(.+)\s+-\s+(.+)/i
-      metaResult.artist ||= nameMatch?[1]
-      metaResult.title ||= nameMatch?[2]
-      metaResult.name ||= md5 Math.random()
-
-      # final desired filename for the mp3 file
-      filename = sanitizeFilename metaResult.name
-
-      renameAndComplete = (err) ->
+      applyMetaData mp3Buffer, metadata, (err, mp3Buffer) ->
         if err then return callback err
-        fs.renameSync mp3FilePath, "#{path.join config.mediaDir, filename}.mp3"
-        callback null, filename
+        filename = "#{uuid()}.mp3"
+        if metadata?.artist and metadata?.title
+          filename = sanitizeFilename "#{metadata.artist} - #{metadata.title}.mp3"
 
-      if metaResult.artUrl
-        artPath = "#{path.join config.mediaDir, filename}.jpg"
-        downloadAndResizeCover metaResult.artUrl, artPath, (err) ->
-          if err then return callback err
-          applyMetaData mp3FilePath, metaResult, artPath, renameAndComplete
-      else
-        applyMetaData mp3FilePath, metaResult, null, renameAndComplete
+        console.log "Uploading file #{filename} to S3"
+        s3Storage.store config.global.aws, config.mp3.s3Storage, mp3Buffer, filename, callback
 
-downloadAndResizeCover = (artUrl, destFile, cb) ->
+
+applyMetaData = (mp3Buffer, metadata, callback) ->
+  metadata = _.pick metadata, (val, key, o) -> val and key in metadataKeys
+  if _.isEmpty metadata
+    console.log "No metadata to apply"
+    return callback null, mp3Buffer
+
+  console.log "Applying metadata to MP3 buffer: #{JSON.stringify(metadata)}"
+  getArt metadata.artUrl, (err, artBuffer) ->
+    id3 = new ID3Writer(new Uint8Array(mp3Buffer).buffer)
+    #setFrame TLEN
+    if metadata.artist then id3.setFrame "TPE1", [metadata.artist]
+    if metadata.title then id3.setFrame "TIT2", metadata.title
+    if metadata.year then id3.setFrame "TYER", metadata.year
+    if metadata.genre then id3.setFrame "TCON", [metadata.genre]
+    if metadata.album then id3.setFrame "TALB", metadata.album
+    if artBuffer
+      console.log "Applying cover pic metadata"
+      id3.setFrame "APIC",
+        type: 3
+        data: new Uint8Array(artBuffer).buffer
+        description: ""
+    id3.addTag()
+    callback null, Buffer.from(id3.arrayBuffer)
+
+getArt = (artUrl, callback) ->
+  if not artUrl then return callback()
+  console.log "Getting art from URL #{artUrl}"
   downloadStream = request artUrl
-  writeStream = fs.createWriteStream destFile
-  graphicsMagick downloadStream, destFile
+  downloadStream.on "error", callback
+  graphicsMagick downloadStream, "cover.jpg"
     .resize 500, 500, "^"
     .gravity "Center"
     .crop 500, 500, 0, 0
-    .stream()
-    .pipe writeStream
-  writeStream.on "error", cb
-  downloadStream.on "error", cb
-  writeStream.on "finish", -> cb()
-
-applyMetaData = (mp3FilePath, metadata, artPath, callback) ->
-  metaCopy = _.pick metadata, (val, key, o) -> val and key in ["artist", "title", "year", "genre", "album"]
-  id3Meta = new id3.Meta(metaCopy, (if artPath then [new id3.Image(artPath)] else null))
-  new id3.Writer().setFile(new id3.File(mp3FilePath)).write id3Meta, (err) ->
-    callback err
+    .toBuffer "JPG", callback
