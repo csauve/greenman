@@ -1,7 +1,16 @@
 request = require "request"
+googleScraper = require "google-search-scraper"
 rateLimit = require "nogo"
 c = require "irc-colors"
-bitly = require "./bitly"
+links = require "./links"
+
+firstResultSearch = (term, cb) ->
+  counter = 0
+  options =
+    query: term
+    limit: 1
+  googleScraper.search options, (err, url) ->
+    if counter++ == 0 then cb err, url
 
 module.exports =
   name: "google"
@@ -21,13 +30,14 @@ module.exports =
 
     bot.msg ///^#{prefix}g\s+(.+)$///, (nick, channel, match) ->
       limiter nick, go: () ->
-        query = match[1]
-        request.get "http://www.google.com/search?q=#{query}&btnI", (error, response, body) ->
-          if error then throw error
-          url = response.request.href
-          bitly.shorten url, (error, shortUrl) ->
-            if error then throw error
-            bot.reply nick, channel, "#{c.underline.teal url} - #{c.underline.red shortUrl}"
+        firstResultSearch match[1], (err, url) ->
+          if err
+            console.error err
+            bot.reply nick, channel, c.red "(●´⌓`●) s-s-sorry #{nick}-san, I have failed you... please forgive me"
+          else
+            links.expandLink url, (reply) ->
+              bot.reply nick, channel, reply || c.underline.teal url
+
 
     bot.msg ///^#{prefix}complete\s+(.+)$///, (nick, channel, match) ->
       limiter nick, go: () ->

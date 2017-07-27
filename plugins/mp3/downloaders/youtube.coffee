@@ -22,7 +22,7 @@ module.exports =
         artUrl: "http://img.youtube.com/vi/#{info.vid}/maxresdefault.jpg"
 
       # reject videos that are too long
-      if info.length_seconds > opts.maxLengthSeconds
+      if opts.maxLengthSeconds && info.length_seconds > opts.maxLengthSeconds
         return callback new Error("The video is too long. The configured maximum length is #{opts.maxLengthSeconds}s")
 
       # find best quality mp4 container to download
@@ -46,7 +46,7 @@ module.exports =
       ffstream.on "data", (data) ->
         outBuf = Buffer.concat([outBuf, data])
 
-
+# todo: use ytdl-core to use any supported format
 findHqFormat = (formats) ->
   quality = 0
   fmt = null

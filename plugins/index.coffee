@@ -2,7 +2,6 @@
 module.exports = [
   require "./ignore"
   require "./rate-limit"
-  require "./bitly"
   require "./chief"
   require "./coins"
   require "./roll"
@@ -13,4 +12,5 @@ module.exports = [
   require "./google"
   require "./die"
   require "./mp3"
+  require "./links"
 ]
