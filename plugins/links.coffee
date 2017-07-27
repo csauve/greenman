@@ -25,7 +25,7 @@ expandLink = (url, cb) ->
     title = results.title
     short = results.shorten
     if title || short
-      cb "#{if title then c.teal "\"#{title}\"" else ""}#{if short then c.underline short else ""}"
+      cb "#{if title then c.teal "\"#{title}\" " else ""}#{if short then c.underline short else ""}"
     else
       cb null
 
