@@ -35,9 +35,8 @@ module.exports =
             console.error err
             bot.reply nick, channel, c.red "(●´⌓`●) s-s-sorry #{nick}-san, I have failed you... please forgive me"
           else
-            links.expandLink url, (reply) ->
-              bot.reply nick, channel, reply || c.underline.teal url
-
+            links.getFormattedTitle url, (title) ->
+              bot.reply nick, channel, "#{if title then "#{title} " else ""}#{c.underline url}"
 
     bot.msg ///^#{prefix}complete\s+(.+)$///, (nick, channel, match) ->
       limiter nick, go: () ->
