@@ -1,0 +1,51 @@
+bot:
+  nick: "greenman"
+  server: "irc.example.com"
+  options:
+    floodProtection: true
+    floodProtectionDelay: 1000
+    messageSplit: 500
+    channels: [
+      "#example"
+    ]
+
+global:
+  prefix: "!"
+  aws:
+    accessKeyId: "<set-me>"
+    secretAccessKey: "<set-me>"
+    region: "us-east-1"
+  sharedS3Bucket: "example-shared"
+
+ignore:
+  nicks: [
+    "ChanServ"
+    "Example"
+  ]
+
+# global rate limiter; spammy nicks will be ignored
+rateLimit:
+  rate: 2
+  strikes: 5
+  cooldown: 3
+
+bing:
+  accountKey: "<set-me>"
+
+bitly:
+  accessToken: "<set-me>"
+
+wolfram:
+  appId: "<set-me>"
+
+mp3:
+  tokenRefillRate: 0.05
+  maxLengthSeconds: 480
+  s3Storage:
+    bucket: "example-shared"
+    folder: "mp3"
+    publicUrlBase: "http://example.s3-website-us-east-1.amazonaws.com/"
+
+talk:
+  localPort: 8902
+  publicUrl: "http://localhost:8902"
