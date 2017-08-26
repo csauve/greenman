@@ -1,5 +1,5 @@
 const c = require("irc-colors");
-const S3FileStateStore = require("./common/s3Store");
+const S3FileStateStore = require("./common/s3store");
 const R = require("ramda");
 const uuid = require("uuid/v4");
 const moment = require("moment");
