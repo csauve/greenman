@@ -27,11 +27,11 @@ module.exports =
 
   help: (config) -> """
     Posts titles for links pasted in the channel, and can shorten URLs:
-    #{c.red "#{config.global.prefix}shorten <url> [<url>...]"}: Shorten the given URL(s)
+    #{c.red "#{config.global.prefix}shorten <url ...>"}: Shorten the given URL(s)
     #{c.red "#{config.global.prefix}shorten"}: Shorten the last URL posted to this channel (excluding ignored users)
   """
 
-  init: (bot, config, modules) ->
+  init: (bot, config) ->
     accessToken = config.bitly?.accessToken
     if !accessToken then throw new Error "bitly.accessToken was not configured"
     Bitly.setAccessToken accessToken

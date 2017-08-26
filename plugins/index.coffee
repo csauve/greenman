@@ -2,6 +2,7 @@
 module.exports = [
   require "./ignore"
   require "./rate-limit"
+  require "./tell"
   require "./chief"
   require "./coins"
   require "./roll"

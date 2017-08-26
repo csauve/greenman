@@ -15,8 +15,8 @@ module.exports =
         chunks.push []
       chunks[chunks.length - 1].push algs[i]
     """
-    #{c.red "#{config.global.prefix}hash <algorithm> <text>"}: Hash text with one of the supported algorithms:
-    #{(c.teal chunk.join ", " for chunk in chunks).join "\n"}
+    #{c.red "#{config.global.prefix}hash <algorithm> <text>"}: Outputs the hash of the given text, excluding leading spaces
+    Supported algorithms: #{(c.teal chunk.join ", " for chunk in chunks).join "\n"}
     """
 
   init: (bot, config) ->

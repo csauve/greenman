@@ -25,11 +25,9 @@ module.exports =
   name: "chief"
 
   help: (config) ->
-    chief: """
-      Randomly posts masterchief quotes. Can be asked directly, too: #{c.red "#{config.global.prefix}chief"} and #{c.red "#{config.global.prefix}cortana"}
-    """
+    "Randomly posts masterchief quotes, or provides them on demand: #{c.red "#{config.global.prefix}chief"}, #{c.red "#{config.global.prefix}cortana"}"
 
-  init: (bot, config, modules) ->
+  init: (bot, config) ->
     prefix = config.global.prefix
 
     bot.msg ///^#{prefix}cortana$///, (nick, channel) ->

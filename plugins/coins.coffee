@@ -9,8 +9,8 @@ module.exports =
 
   help: (config) -> """
     Convert between crypto-currencies using #{c.underline "http://cryptocoincharts.info"}
-    #{c.red "#{config.global.prefix}coin <amount> <source currency ID> to <dest currency ID>"}: Convert between trading pairs
-    #{c.red "#{config.global.prefix}coin-list"}: List trading currency IDs
+    #{c.red "#{config.global.prefix}coin <amount> <currency> to <currency>"}: Convert between trading pairs, e.g. BTC to ETH
+    #{c.red "#{config.global.prefix}coin-list"}: List valid currencies
   """
 
   init: (bot, config) ->

@@ -27,7 +27,7 @@ setupServer = (config) ->
 
 module.exports =
   help: (config) ->
-    "Visit #{c.red "#{config.talk.publicUrl}"} for live playback of the channel"
+    "Visit #{c.underline "#{config.talk.publicUrl}"} for live playback of the channel"
 
   init: (bot, config) ->
     io = setupServer config.talk

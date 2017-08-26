@@ -9,10 +9,11 @@ module.exports =
   name: "mp3"
 
   help: (config) -> """
-    Converts media at a URL into an mp3 file, with metadata scraping
-    #{c.red "#{config.global.prefix}mp3 <url> [metadata CSON]"}
-    Supported metadata: #{c.teal mediaWorker.supportedMetadata.join ", "}
+    Converts media at a URL into an mp3 file, with metadata scraping.
+    #{c.red "#{config.global.prefix}mp3 <url> [metadata]"}
     Supported downloaders: #{c.teal mediaWorker.supportedDownloaders.join ", "}
+    Supported metadata: #{c.teal mediaWorker.supportedMetadata.join ", "}
+    Valid metadata example: #{c.teal "title: 'Sandstorm', artist: 'Darude'"}
   """
 
   init: (bot, config) ->

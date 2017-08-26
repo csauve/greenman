@@ -1,8 +1,7 @@
 graphicsMagick = require "gm"
 sanitizeFilename = require "sanitize-filename"
 ID3Writer = require "browser-id3-writer"
-findRemoveSync = require "find-remove"
-_ = require "underscore"
+_ = require "lodash"
 request = require "request"
 uuid = require "uuid/v4"
 
