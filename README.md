@@ -2,7 +2,7 @@
 This repo implements the #modacity greenman bot, built on the [node-greenman](https://github.com/csauve/node-greenman) library.
 
 ## Running the Bot
-Before running, you will need to make adjustments to `config.cson` dependening on the environment, including AWS credentials and other API keys. The bot runs in a [Docker](https://www.docker.com/) container which sets up all required dependencies. Once you've installed the [Docker Engine](https://docs.docker.com/engine/installation/):
+Before running, you will need to copy `example.config.cson` to `config.cson` and make adjustments, including IRC client configuration and API keys. The bot runs in a [Docker](https://www.docker.com/) container which sets up all required dependencies. Once you've installed the [Docker Engine](https://docs.docker.com/engine/installation/):
 
 ```sh
 docker built -t greeenman .

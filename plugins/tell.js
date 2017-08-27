@@ -44,7 +44,7 @@ const getScheduledMessages = (state) => R.filter(
 const formatMessageForDelivery = ({recipient, sender, content, createdDate}) => {
   const from = nicksMatch(sender, recipient) ? "you" : sender;
   const ago = moment(createdDate).fromNow();
-  return `${c.red(`(${from}, ${ago})`)} ${content ? c.teal(content) : "<no message>"}`
+  return `${c.red(`(${from}, ${ago})`)} ${c.teal(content ? content : "*poke*")}`
 };
 
 const formatMessageForSender = ({recipient, sender, deliveryDate}) => {
@@ -111,6 +111,10 @@ const parseDateFor = (bot, nick, channel, s) => {
     bot.reply(nick, channel, `Please provide a date in a supported format: ${c.underline("https://github.com/wanasit/chrono")}`);
     return null;
   };
+  if (date.getTime() <= new Date().getTime()) {
+    bot.reply(nick, channel, "Please provide a date in the future");
+    return null;
+  }
   return date.getTime();
 };
 
@@ -118,6 +122,10 @@ const parseDurationFor = (bot, nick, channel, s) => {
   const dur = parseDuration(s);
   if (dur == 0) {
     bot.reply(nick, channel, `Please provide a duration in a supported format: ${c.underline("https://github.com/jkroso/parse-duration")}`);
+    return null;
+  }
+  if (dur < 0) {
+    bot.reply(nick, channel, "Please provide a positive duration");
     return null;
   }
   return dur + new Date().getTime();
@@ -128,11 +136,10 @@ module.exports = {
 
   help: (config) => stripIndent`
     Leave users messages and schedules reminders in this channel.
-    ${c.red(`${config.global.prefix}tell <nick> [message]`)}: Messages <nick> when they next post
-    ${c.red(`${config.global.prefix}at|on <date> [message]`)}: Messages you at <date>
-    ${c.red(`${config.global.prefix}in <duration> [message]`)}: Messages you after <duration> has elapsed
-    ${c.red(`${config.global.prefix}msg at|on <date> tell <nick> [message]`)}: Messages <nick> at <date>
-    ${c.red(`${config.global.prefix}msg in <duration> tell <nick> [message]`)}: Messages <nick> after <duration> has elapsed
+    ${c.red(`${config.global.prefix}tell|poke [nick] [message]`)}: Messages <nick> when they next post
+    ${c.red(`${config.global.prefix}at|on <date> tell|poke [nick] [message]`)}: Messages <nick> at <date>
+    ${c.red(`${config.global.prefix}in <duration> tell|poke [nick] [message]`)}: Messages <nick> after <duration> has elapsed
+    e.g. ${c.teal("\"!at 15:44:15 est poke me\"")}, ${c.teal("\"!in 30m tell jcap buy a desk")}
   `,
 
   init: (bot, config) => {
@@ -149,33 +156,20 @@ module.exports = {
       notifyMessages(datastore, bot, nick, channel);
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}tell\\s+(\\S+)(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       saveMessage(datastore, bot, {
-        recipient: match[1],
+        recipient: match[1] || nick,
         sender: nick,
         channel,
         content: match[2]
       });
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       const deliveryDate = parseDateFor(bot, nick, channel, match[1]);
       if (deliveryDate) {
         saveMessage(datastore, bot, {
-          recipient: nick,
-          sender: nick,
-          channel,
-          content: match[2],
-          deliveryDate
-        });
-      }
-    });
-
-    bot.msg(new RegExp(`^${config.global.prefix}msg\\s+(?:at|on)\\s+(.+)\\s+tell\\s+(\\S+)(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
-      const deliveryDate = parseDateFor(bot, nick, channel, match[1]);
-      if (deliveryDate) {
-        saveMessage(datastore, bot, {
-          recipient: match[2],
+          recipient: match[2] || nick,
           sender: nick,
           channel,
           content: match[3],
@@ -184,27 +178,14 @@ module.exports = {
       }
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}msg\\s+in\\s+(.+)\\s+tell\\s+(\\S+)(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       const deliveryDate = parseDurationFor(bot, nick, channel, match[1]);
       if (deliveryDate) {
         saveMessage(datastore, bot, {
-          recipient: match[2],
+          recipient: match[2] || nick,
           sender: nick,
           channel,
           content: match[3],
-          deliveryDate
-        });
-      }
-    });
-
-    bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
-      const deliveryDate = parseDurationFor(bot, nick, channel, match[1]);
-      if (deliveryDate) {
-        saveMessage(datastore, bot, {
-          recipient: nick,
-          sender: nick,
-          channel,
-          content: match[2],
           deliveryDate
         });
       }
