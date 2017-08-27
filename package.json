@@ -23,6 +23,7 @@
     "html-entities": "^1.2.0",
     "irc-colors": "^1.3.0",
     "lodash": "^4.17.4",
+    "long-timeout": "^0.1.1",
     "moment": "^2.18.1",
     "node-bitlyapi": "^0.4.0",
     "nogo": "^1.0.0",

@@ -6,6 +6,7 @@ const moment = require("moment");
 const {stripIndent} = require("common-tags");
 const parseDuration = require("parse-duration");
 const chrono = require("chrono-node");
+const lt = require("long-timeout");
 
 const sanitizeNick = R.compose(R.trim, R.toLower, R.replace(/_/g, ""));
 
@@ -54,7 +55,7 @@ const formatMessageForSender = ({recipient, sender, deliveryDate}) => {
 };
 
 const scheduleDelivery = (datastore, bot, message) => {
-  setTimeout(
+  lt.setTimeout(
     () => {
       bot.reply(message.recipient, message.channel, formatMessageForDelivery(message));
       datastore.getState((err, state) => {
