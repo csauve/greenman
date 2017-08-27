@@ -9,3 +9,6 @@ module.exports =
   init: (bot, config) ->
     bot.msg ///^#{config.global.prefix}die///i, (nick, channel) ->
       process.exit()
+
+    bot.msg ///^greenman go home$///i, (nick, channel) ->
+      process.exit()
