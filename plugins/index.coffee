@@ -15,4 +15,5 @@ module.exports = [
   require "./die"
   require "./mp3"
   require "./links"
+  require "./eval"
 ]

@@ -49,3 +49,9 @@ mp3:
 talk:
   localPort: 8902
   publicUrl: "http://localhost:8902"
+
+eval:
+  timeout: 200
+  tokenRefillRate: 0.5
+  maxResultLength: 300
+  maxResultDepth: 3
