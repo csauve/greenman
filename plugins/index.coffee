@@ -16,4 +16,5 @@ module.exports = [
   require "./mp3"
   require "./links"
   require "./eval"
+  require "./quotes"
 ]

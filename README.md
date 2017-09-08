@@ -54,11 +54,10 @@ docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 
 ## Plugin ideas
 * Logger
-* Identity module for user locales
 * Image describer
-* Deepdream
+* MUD text adventure game
 * Nick impersonator (e.g. RNN, markov chain)
-* JS/coffee REPL plugin
+* Identity module for user locales
 
 ## License
 [MIT](http://opensource.org/licenses/mit-license.php)

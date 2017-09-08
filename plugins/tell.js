@@ -144,7 +144,7 @@ module.exports = {
   `,
 
   init: (bot, config) => {
-    datastore = new S3FileStateStore(config.global.sharedS3Bucket, "tell.json", config.global.aws);
+    const datastore = new S3FileStateStore(config.global.sharedS3Bucket, "tell.json", config.global.aws);
 
     datastore.getState((err, state) => {
       if (err) throw new Error("Failed to load initial state from tell.json", err);

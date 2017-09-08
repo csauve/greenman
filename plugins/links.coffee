@@ -18,7 +18,7 @@ shorten = (longUrl, callback) ->
 
 getFormattedTitle = (url, cb) ->
   getTitleAtUrl url, (err, title) ->
-    cb if title then c.teal "\"#{title}\"" else null
+    cb if title then c.teal "\"#{title.trim()}\"" else null
 
 module.exports =
   getFormattedTitle: getFormattedTitle
