@@ -10,5 +10,5 @@ module.exports =
     bot.msg ///^#{config.global.prefix}die///i, (nick, channel) ->
       process.exit()
 
-    bot.msg ///^(?:greenman go home|go home greenman)///i, (nick, channel) ->
+    bot.msg ///^(?:greenman\sgo\shome|go\shome\sgreenman)///i, (nick, channel) ->
       process.exit()

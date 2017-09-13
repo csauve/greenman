@@ -38,6 +38,11 @@ bitly:
 wolfram:
   appId: "<set-me>"
 
+links:
+  maxSavedLinks: 500
+  defaultDuration: "1d"
+  digestUrlBase: "http://example.s3-website-us-east-1.amazonaws.com/"
+
 mp3:
   tokenRefillRate: 0.05
   maxLengthSeconds: 480

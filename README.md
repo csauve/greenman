@@ -52,7 +52,8 @@ docker tag greenman:latest example.ecr.us-east-1.amazonaws.com/greenman:latest
 docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 ```
 
-## Plugin ideas
+## Todo / plugin ideas
+* Shared S3 code
 * Logger
 * Image describer
 * MUD text adventure game
