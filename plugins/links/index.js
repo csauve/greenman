@@ -48,7 +48,7 @@ const parseUrlsFromText = (text) => Array.from(getUrls(text));
 
 //library doesn't trim -- also ignore errors
 const getLinkTitle = (url, cb) => {
-  getTitleAtUrl(url, (err, title) => cb(title.trim()));
+  getTitleAtUrl(url, (err, title) => cb(title ? title.trim() : null));
 };
 
 const formatTitle = (title) => title ? c.teal(`"${title.trim()}"`) : null;
