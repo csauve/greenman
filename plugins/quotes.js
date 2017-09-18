@@ -2,12 +2,11 @@ const c = require("irc-colors");
 const R = require("ramda");
 const {stripIndent} = require("common-tags");
 const S3FileStateStore = require("./common/s3store");
-const fuzzysearch = require("fuzzysearch");
 
 const sanitize = (s) => c.stripColorsAndStyle(s).trim();
 const normalize = (s) => sanitize(s).toLowerCase();
 const quotesEqual = R.curry((q1, q2) => normalize(q1) == normalize(q2));
-const quoteFuzzyMatch = R.curry((query, quote) => fuzzysearch(normalize(query), normalize(quote)));
+const quoteFuzzyMatch = R.curry((query, quote) => normalize(quote).includes(normalize(query)));
 
 const findQuote = (quotes, query) => {
   if (query) quotes = R.filter(quoteFuzzyMatch(query), quotes);

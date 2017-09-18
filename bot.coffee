@@ -15,7 +15,7 @@ for plugin in plugins
 
 bot.any ///^#{prefix}help\s+(.+)$///i, (from, to, match) ->
   content = helpPages[match[1]]
-  bot.reply from, to, if content then content else "Help not found for \"#{match[1]}\". Try #{c.red "#{prefix}help"}"
+  bot.reply from, to, if content then content else "Help not found for \"#{match[1]}\". Try #{c.red "#{prefix}help"} for a list of plugins"
 
 bot.any ///^#{prefix}help$///i, (from, to, match) ->
   results = (page for page of helpPages)

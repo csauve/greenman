@@ -53,23 +53,23 @@ const getLinkTitle = (url, cb) => {
 
 const formatTitle = (title) => title ? c.teal(`"${title.trim()}"`) : null;
 
-const shorten = (Bitly, longUrl, callback) => {
+const shorten = (bitlyClient, longUrl, callback) => {
   const params = {
     longUrl: normalizeUrl(longUrl).trim(),
     format: "txt",
     domain: "j.mp"
   };
-  Bitly.shorten(params, (error, result) => {
+  bitlyClient.shorten(params, (error, result) => {
     callback(error, result ? result.trim() : null);
   });
 };
 
-const shortenAndReply = (bot, nick, channel, urls) => {
+const shortenAndReply = (bitlyClient, bot, nick, channel, urls) => {
   if (urls.length == 0) {
     bot.reply(nick, channel, "I couldn't find a URL to shorten");
   } else {
     urls.forEach((url) => {
-      shorten(url, (err, short) => {
+      shorten(bitlyClient, url, (err, short) => {
         if (short) bot.reply(nick, channel, c.underline(short));
       });
     });
@@ -104,17 +104,17 @@ module.exports = {
   },
 
   init: (bot, config) => {
-    const Bitly = new BitlyAPI({});
-    Bitly.setAccessToken(config.bitly.accessToken);
+    const bitlyClient = new BitlyAPI({});
+    bitlyClient.setAccessToken(config.bitly.accessToken);
     const datastore = new S3FileStateStore(config.global.sharedS3Bucket, "links.json", config.global.aws);
 
     bot.msg(new RegExp(`^${config.global.prefix}shorten(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       if (match[1]) {
-        shortenAndReply(bot, nick, channel, parseUrlsFromText(match[1]));
+        shortenAndReply(bitlyClient, bot, nick, channel, parseUrlsFromText(match[1]));
       } else {
         lookupLinks(datastore, {limitN: 1}, (err, links) => {
           if (err) return;
-          shortenAndReply(bot, nick, channel, links.map(({url}) => url));
+          shortenAndReply(bitlyClient, bot, nick, channel, links.map(({url}) => url));
         });
       }
     });
