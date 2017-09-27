@@ -8,7 +8,8 @@ const parseDuration = require("parse-duration");
 const chrono = require("chrono-node");
 const lt = require("long-timeout");
 
-const sanitizeNick = R.compose(R.trim, R.toLower, R.replace(/_/g, ""));
+const alphanumeric = R.replace(/[^0-9A-Ba-b]/g, "");
+const sanitizeNick = R.compose(R.trim, R.toLower, alphanumeric);
 
 const nicksMatch = (nickA, nickB) =>
   sanitizeNick(nickA) == sanitizeNick(nickB);
@@ -157,7 +158,7 @@ module.exports = {
       notifyMessages(datastore, bot, nick, channel);
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       saveMessage(datastore, bot, {
         recipient: match[1] || nick,
         sender: nick,
@@ -166,7 +167,7 @@ module.exports = {
       });
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       const deliveryDate = parseDateFor(bot, nick, channel, match[1]);
       if (deliveryDate) {
         saveMessage(datastore, bot, {
@@ -179,7 +180,7 @@ module.exports = {
       }
     });
 
-    bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+))?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       const deliveryDate = parseDurationFor(bot, nick, channel, match[1]);
       if (deliveryDate) {
         saveMessage(datastore, bot, {
