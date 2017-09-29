@@ -8,7 +8,7 @@ const parseDuration = require("parse-duration");
 const chrono = require("chrono-node");
 const lt = require("long-timeout");
 
-const alphanumeric = R.replace(/[^0-9A-Ba-b]/g, "");
+const alphanumeric = R.replace(/[^0-9A-Za-z]/g, "");
 const sanitizeNick = R.compose(R.trim, R.toLower, alphanumeric);
 
 const nicksMatch = (nickA, nickB) =>
