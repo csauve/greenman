@@ -12,6 +12,7 @@ const renderDigest = require("./renderDigest");
 const uuid = require("uuid/v4");
 const S3FileStateStore = require("../common/s3store");
 const s3Temp = require("../common/s3tmp");
+const {nicksMatch} = require("../common/nicks");
 
 const getLinks = (state) => R.pathOr([], ["links"], state);
 const setLinks = (quotes, state) => R.assocPath(["links"], quotes, state);
@@ -35,7 +36,9 @@ const lookupLinks = (datastore, filters, cb) => {
 const appendLinks = (oldLinks, newLinks, maxSavedLinks) =>
   R.takeLast(maxSavedLinks, R.concat(oldLinks, newLinks));
 
-const isRepost = R.curry((link1, link2) => link1.url == link2.url && link1.channel == link2.channel);
+const isRepost = R.curry((link1, link2) => (
+  link1.url == link2.url && link1.channel == link2.channel && !nicksMatch(link1.nick, link2.nick)
+));
 
 const findRepost = R.curry((prevLinks, newLink) =>
   R.findLast(isRepost(newLink), prevLinks)

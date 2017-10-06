@@ -1,5 +1,6 @@
 const c = require("irc-colors");
 const S3FileStateStore = require("./common/s3store");
+const {nicksMatch} = require("./common/nicks");
 const R = require("ramda");
 const uuid = require("uuid/v4");
 const moment = require("moment");
@@ -7,12 +8,6 @@ const {stripIndent} = require("common-tags");
 const parseDuration = require("parse-duration");
 const chrono = require("chrono-node");
 const lt = require("long-timeout");
-
-const alphanumeric = R.replace(/[^0-9A-Za-z]/g, "");
-const sanitizeNick = R.compose(R.trim, R.toLower, alphanumeric);
-
-const nicksMatch = (nickA, nickB) =>
-  sanitizeNick(nickA) == sanitizeNick(nickB);
 
 const getMessages = (state) =>
   R.pathOr([], ["messages"], state);
