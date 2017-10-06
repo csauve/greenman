@@ -1,5 +1,6 @@
 const c = require("irc-colors");
 const R = require("ramda");
+const moment = require("moment");
 const {stripIndent} = require("common-tags");
 const getTitleAtUrl = require("url-to-title");
 const getUrls = require("get-urls");
@@ -34,12 +35,24 @@ const lookupLinks = (datastore, filters, cb) => {
 const appendLinks = (oldLinks, newLinks, maxSavedLinks) =>
   R.takeLast(maxSavedLinks, R.concat(oldLinks, newLinks));
 
-const saveLinks = (datastore, links, maxSavedLinks, cb) => {
+const isRepost = R.curry((link1, link2) => link1.url == link2.url && link1.channel == link2.channel);
+
+const findRepost = R.curry((prevLinks, newLink) =>
+  R.findLast(isRepost(newLink), prevLinks)
+);
+
+const findReposts = (prevLinks, newLinks) =>
+  R.filter(R.identity, R.map(findRepost(prevLinks), newLinks));
+
+const saveLinks = (datastore, newLinks, maxSavedLinks, cb) => {
   datastore.getState((err, state) => {
     if (err) return cb(err);
-    const newLinks = appendLinks(getLinks(state), links, maxSavedLinks);
-    datastore.saveState(setLinks(newLinks, state), (err) => {
-      cb(err, err ? null : newLinks);
+    const prevLinks = getLinks(state);
+    const reposts = findReposts(prevLinks, newLinks);
+    const finalLinks = appendLinks(prevLinks, newLinks, maxSavedLinks);
+    datastore.saveState(setLinks(finalLinks, state), (err) => {
+      if (err) return cb(err);
+      cb(null, reposts);
     });
   });
 };
@@ -51,7 +64,13 @@ const getLinkTitle = (url, cb) => {
   getTitleAtUrl(url, (err, title) => cb(title ? title.trim() : null));
 };
 
-const formatTitle = (title) => title ? c.teal(`"${title.trim()}"`) : null;
+const formatTitle = (title, origLink) => {
+  if (!title && !origLink) return null;
+  return R.join(" ", R.filter(R.identity, [
+    title ? c.teal(`"${title.trim()}"`) : null,
+    origLink ? c.red(`(repost! ${origLink.nick}, ${moment(origLink.datePosted).fromNow()})`) : null,
+  ]));
+};
 
 const shorten = (bitlyClient, longUrl, callback) => {
   const params = {
@@ -155,11 +174,14 @@ module.exports = {
 
       async.map(urls, buildLink, (err, links) => {
         if (err) return console.error(err);
-        saveLinks(datastore, links, config.links.maxSavedLinks, (err) => {
-          if (err) console.error(err);
-        });
-        links.forEach(({url, title}) => {
-          if (title) bot.say(channel, formatTitle(title));
+        saveLinks(datastore, links, config.links.maxSavedLinks, (err, reposts) => {
+          if (err) return console.error(err);
+          links.forEach((link) => {
+            const origLink = R.find(isRepost(link), reposts);
+            if (link.title || origLink) {
+              bot.say(channel, formatTitle(link.title, origLink));
+            }
+          });
         });
       });
     });

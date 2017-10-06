@@ -1,3 +1,4 @@
 node_modules
 shipit.sh
 config.cson
+package-lock.json
