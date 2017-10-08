@@ -8,8 +8,9 @@ const normalize = (s) => sanitize(s).toLowerCase();
 const quotesEqual = R.curry((q1, q2) => normalize(q1) == normalize(q2));
 const quoteFuzzyMatch = R.curry((query, quote) => normalize(quote).includes(normalize(query)));
 
-const findQuote = (quotes, query) => {
+const findQuote = (quotes, query, lastQuote) => {
   if (query) quotes = R.filter(quoteFuzzyMatch(query), quotes);
+  if (!query && lastQuote) quotes = R.reject(quotesEqual(lastQuote), quotes);
   if (quotes.length == 0) return null;
   return quotes[Math.floor(Math.random() * quotes.length)];
 };
@@ -48,12 +49,14 @@ module.exports = {
 
   init: (bot, config) => {
     const datastore = new S3FileStateStore(config.global.sharedS3Bucket, "quotes.json", config.global.aws);
+    let lastQuote = null;
 
     bot.msg(new RegExp(`^${config.global.prefix}q(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
       retrieveQuotes(datastore, (err, quotes) => {
         if (err) return console.error(err);
-        const quote = findQuote(quotes, match[1]);
+        const quote = findQuote(quotes, match[1], lastQuote);
         bot.reply(nick, channel, quote ? c.teal(quote) : "No results");
+        lastQuote = quote;
       });
     });
 
