@@ -54,7 +54,6 @@ docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 
 ## Todo / plugin ideas
 * Better error handling or logs
-* Coins module stopped working
 * Shared S3 code
 * Logger
 * Image describer

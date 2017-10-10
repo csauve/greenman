@@ -5,7 +5,6 @@ module.exports = [
   require "./clean-text"
   require "./tell"
   require "./chief"
-  require "./coins"
   require "./roll"
   require "./hash"
   require "./hi"
