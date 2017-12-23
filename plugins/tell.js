@@ -19,10 +19,10 @@ const updateMessages = (upd, state) =>
   setMessages(upd(getMessages(state)), state);
 
 const addMessage = (message, state) =>
-  updateMessages(R.append(message));
+  updateMessages(R.append(message), state);
 
 const clearMessages = (messageIds, state) =>
-  updateMessages(R.reject((message) => R.contains(message.id, messageIds)));
+  updateMessages(R.reject((message) => R.contains(message.id, messageIds)), state);
 
 const getUnscheduledMessagesFor = (recipient, channel, state) => R.filter(
   (message) => (
