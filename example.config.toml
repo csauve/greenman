@@ -1,0 +1,45 @@
+[bot]
+nick = "greenman"
+server = "irc.example.com"
+
+[bot.options]
+floodProtection = true
+floodProtectionDelay = 1000
+messageSplit = 500
+channels = ["#example"]
+
+[bot.styles]
+strong = red
+em = teal
+url = underline
+
+[aws]
+accessKeyId = "<set-me>"
+secretAccessKey = "<set-me>"
+region = "us-east-1"
+sharedS3Bucket = "example-shared"
+
+# global rate limiter; spammy nicks will be ignored
+[filter]
+ignoreNicks = ["ChanServ", "Example"]
+rate = 2
+burst = 5
+
+[bing]
+accountKey = "<set-me>"
+
+[bitly]
+accessToken = "<set-me>"
+
+[wolfram]
+appId = "<set-me>"
+
+[links]
+maxSavedLinks = 500
+defaultDuration = "1d"
+
+[eval]
+timeout = 200
+tokenRefillRate = 0.5
+maxResultLength = 300
+maxResultDepth = 3

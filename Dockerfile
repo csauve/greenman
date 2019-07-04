@@ -43,9 +43,8 @@ RUN yum install -y util-linux
 
 RUN mkdir -p /usr/local/greenman
 WORKDIR /usr/local/greenman
-RUN npm install -g coffee-script
 COPY . .
 RUN npm install
 
 EXPOSE 8902
-CMD ["coffee", "bot.coffee"]
+CMD ["node", "bot.js"]

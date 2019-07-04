@@ -1,4 +1,3 @@
-const c = require("irc-colors");
 const S3FileStateStore = require("./common/s3store");
 const {nicksMatch} = require("./common/nicks");
 const R = require("ramda");
@@ -41,7 +40,7 @@ const getScheduledMessages = (state) => R.filter(
 const formatMessageForDelivery = ({recipient, sender, content, createdDate}) => {
   const from = nicksMatch(sender, recipient) ? "you" : sender;
   const ago = moment(createdDate).fromNow();
-  return `${c.red(`(${from}, ${ago})`)} ${c.teal(content ? content : "*poke*")}`
+  return `${style.em(`(${from}, ${ago})`)} ${c.teal(content ? content : "*poke*")}`
 };
 
 const formatMessageForSender = ({recipient, sender, deliveryDate}) => {
@@ -105,7 +104,7 @@ const notifyMessages = (datastore, bot, nick, channel) => {
 const parseDateFor = (bot, nick, channel, s) => {
   const date = chrono.parseDate(s);
   if (date == null) {
-    bot.reply(nick, channel, `Please provide a date in a supported format: ${c.underline("https://github.com/wanasit/chrono")}`);
+    bot.reply(nick, channel, `Please provide a date in a supported format: ${c.url("https://github.com/wanasit/chrono")}`);
     return null;
   };
   if (date.getTime() <= new Date().getTime()) {
@@ -118,7 +117,7 @@ const parseDateFor = (bot, nick, channel, s) => {
 const parseDurationFor = (bot, nick, channel, s) => {
   const dur = parseDuration(s);
   if (dur == 0) {
-    bot.reply(nick, channel, `Please provide a duration in a supported format: ${c.underline("https://github.com/jkroso/parse-duration")}`);
+    bot.reply(nick, channel, `Please provide a duration in a supported format: ${c.url("https://github.com/jkroso/parse-duration")}`);
     return null;
   }
   if (dur < 0) {
@@ -128,64 +127,62 @@ const parseDurationFor = (bot, nick, channel, s) => {
   return dur + new Date().getTime();
 };
 
-module.exports = {
-  name: "tell",
-
-  help: (config) => stripIndent`
+module.exports = (config, {style, help, match}) => {
+  help("tell", stripIndent`
     Leave users messages and schedules reminders in this channel.
-    ${c.red(`${config.global.prefix}tell|poke [nick] [message]`)}: Messages <nick> when they next post
-    ${c.red(`${config.global.prefix}at|on <date> tell|poke [nick] [message]`)}: Messages <nick> at <date>
-    ${c.red(`${config.global.prefix}in <duration> tell|poke [nick] [message]`)}: Messages <nick> after <duration> has elapsed
-    e.g. ${c.teal("\"!at 15:44:15 est poke me\"")}, ${c.teal("\"!in 30m tell jcap buy a desk")}
-  `,
+    ${style.em(`!tell|poke [nick] [message]`)}: Messages <nick> when they next post
+    ${style.em(`!at|on <date> tell|poke [nick] [message]`)}: Messages <nick> at <date>
+    ${style.em(`!in <duration> tell|poke [nick] [message]`)}: Messages <nick> after <duration> has elapsed
+    e.g. ${style.em("\"!at 15:44:15 est poke me\"")}, ${style.em("\"!in 30m tell jcap buy a desk\"")}
+  `);
 
-  init: (bot, config) => {
-    const datastore = new S3FileStateStore(config.global.sharedS3Bucket, "tell.json", config.global.aws);
+  const datastore = new S3FileStateStore(config.global.sharedS3Bucket, "tell.json", config.global.aws);
 
-    datastore.getState((err, state) => {
-      if (err) throw new Error("Failed to load initial state from tell.json", err);
-      for (let message of getScheduledMessages(state)) {
-        scheduleDelivery(datastore, bot, message);
-      }
+  datastore.getState((err, state) => {
+    if (err) throw new Error("Failed to load initial state from tell.json", err);
+    for (let message of getScheduledMessages(state)) {
+      scheduleDelivery(datastore, bot, message);
+    }
+  });
+
+  //todo: replacement for this
+  bot.match(".*", (ctx) => {
+    notifyMessages(datastore, bot, ctx.nick, channel);
+  });
+
+  //todo: don't want this stuff leaking across channels
+  match(`^!(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ([recipient, content], ctx) => {
+    saveMessage(datastore, bot, {
+      recipient: recipient || ctx.from,
+      sender: nick,
+      channel,
+      content
     });
+  });
 
-    bot.msg((nick, channel) => {
-      notifyMessages(datastore, bot, nick, channel);
-    });
-
-    bot.msg(new RegExp(`^${config.global.prefix}(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+  bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    const deliveryDate = parseDateFor(bot, nick, channel, match[1]);
+    if (deliveryDate) {
       saveMessage(datastore, bot, {
-        recipient: match[1] || nick,
+        recipient: match[2] || nick,
         sender: nick,
         channel,
-        content: match[2]
+        content: match[3],
+        deliveryDate
       });
-    });
+    }
+  });
 
-    bot.msg(new RegExp(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
-      const deliveryDate = parseDateFor(bot, nick, channel, match[1]);
-      if (deliveryDate) {
-        saveMessage(datastore, bot, {
-          recipient: match[2] || nick,
-          sender: nick,
-          channel,
-          content: match[3],
-          deliveryDate
-        });
-      }
-    });
-
-    bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
-      const deliveryDate = parseDurationFor(bot, nick, channel, match[1]);
-      if (deliveryDate) {
-        saveMessage(datastore, bot, {
-          recipient: match[2] || nick,
-          sender: nick,
-          channel,
-          content: match[3],
-          deliveryDate
-        });
-      }
-    });
-  }
+  bot.msg(new RegExp(`^${config.global.prefix}in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
+    const deliveryDate = parseDurationFor(bot, nick, channel, match[1]);
+    if (deliveryDate) {
+      saveMessage(datastore, bot, {
+        recipient: match[2] || nick,
+        sender: nick,
+        channel,
+        content: match[3],
+        deliveryDate
+      });
+    }
+  });
 };

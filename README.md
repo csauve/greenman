@@ -53,6 +53,9 @@ docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 ```
 
 ## Todo / plugin ideas
+* Deprecate nogo
+* De-coffee
+* Deprecate mp3 converter?
 * Better error handling or logs
 * Shared S3 code
 * Logger

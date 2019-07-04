@@ -1,4 +1,3 @@
-const {html, safeHtml} = require("common-tags");
 const R = require("ramda");
 const moment = require("moment");
 
@@ -6,6 +5,8 @@ const formatSince = (since) => moment(since).fromNow();
 const formatDate = (datePosted) => moment(datePosted).format("YYYY-MM-DD");
 const formatDateTime = (datePosted) => moment(datePosted).format();
 const isSameDay = (linkA, linkB) => formatDate(linkA) == formatDate(linkB);
+
+//todo: reply in PM
 
 module.exports = (links, {since, limitN, channel}) => html`
   <!DOCTYPE html>
