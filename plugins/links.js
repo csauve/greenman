@@ -8,10 +8,8 @@ const normalizeUrl = require("normalize-url");
 const async = require("async");
 const BitlyAPI = require("node-bitlyapi");
 const parseDuration = require("parse-duration");
-const renderDigest = require("./renderDigest");
 const uuid = require("uuid/v4");
 const S3FileStateStore = require("../common/s3store");
-const s3Temp = require("../common/s3tmp");
 const {nicksMatch} = require("../common/nicks");
 
 const getLinks = (state) => R.pathOr([], ["links"], state);
@@ -117,8 +115,6 @@ module.exports = {
     Posts titles for links pasted in the channel, and other services:
     ${c.red(`${config.global.prefix}shorten <url ...>`)}: Shorten the given URL(s)
     ${c.red(`${config.global.prefix}shorten`)}: Shorten the last URL posted to this channel (excluding ignored users)
-    ${c.red(`${config.global.prefix}digest [n|duration=${config.links.defaultDuration}]`)}: Generate a digest of recently posted links
-    The maximum size of digests is configured to ${config.links.maxSavedLinks} links
   `,
 
   getFormattedTitle: (url, cb) => {
@@ -139,31 +135,6 @@ module.exports = {
           shortenAndReply(bitlyClient, bot, nick, channel, links.map(({url}) => url));
         });
       }
-    });
-
-    bot.msg(new RegExp(`^${config.global.prefix}digest(?:\\s+(.+))?$`, "i"), (nick, channel, match) => {
-      const filters = parseLookupFilters(channel, match[1], config.links.defaultDuration);
-      lookupLinks(datastore, filters, (err, links) => {
-        if (err) {
-          bot.reply(nick, channel, "Failed to get links");
-          return;
-        }
-        const html = renderDigest(links, filters);
-        s3Temp.store(
-          config.global.aws,
-          {folder: "digests", bucket: config.global.sharedS3Bucket, urlBase: config.links.digestUrlBase},
-          html,
-          "text/html;charset=utf-8",
-          `digest-${uuid()}.html`,
-          (err, publicUrl) => {
-            if (err) {
-              bot.reply(nick, channel, "I failed, maybe try again. Or dont, see if I care. ┐( ˘_˘)┌");
-              return;
-            }
-            bot.reply(nick, channel, `Here's your digest: ${c.underline(publicUrl)}`);
-          }
-        );
-      });
     });
 
     bot.msg((nick, channel, text) => {

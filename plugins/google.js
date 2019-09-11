@@ -4,6 +4,11 @@ rateLimit = require "nogo"
 c = require "irc-colors"
 links = require "./links"
 
+//add more engines?
+//todo: https://azure.microsoft.com/en-us/pricing/details/cognitive-services/search-api/
+//https://wiby.me/
+//https://www.dailydot.com/layer8/best-deep-web-search-engines/
+
 firstResultSearch = (term, cb) ->
   counter = 0
   options =
@@ -22,6 +27,8 @@ module.exports =
 
   init: (bot, config) ->
     prefix = config.global.prefix
+
+    //"Relax. I'd rather not piss this thing off."
 
     limiter = rateLimit
       rate: 0.3

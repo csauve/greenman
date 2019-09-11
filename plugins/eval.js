@@ -28,6 +28,8 @@ module.exports = {
       burst: 1
     });
 
+    //"Slow down. You're losing me."
+
     bot.msg(new RegExp(`^${config.global.prefix}js\\s+(.+)`, "i"), (nick, channel, match) => {
       limiter(nick, {
         no: () => bot.reply(nick, channel, `Not so fast! Please wait at least ${1 / tokenRefillRate}s between runs`),

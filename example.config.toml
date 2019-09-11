@@ -12,12 +12,13 @@ channels = ["#example"]
 strong = red
 em = teal
 url = underline
+nick = blue
 
-[aws]
+[s3]
 accessKeyId = "<set-me>"
 secretAccessKey = "<set-me>"
 region = "us-east-1"
-sharedS3Bucket = "example-shared"
+bucketName = "example-shared"
 
 # global rate limiter; spammy nicks will be ignored
 [filter]
