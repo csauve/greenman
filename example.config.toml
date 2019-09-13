@@ -9,10 +9,10 @@ messageSplit = 500
 channels = ["#example"]
 
 [bot.styles]
-strong = red
-em = teal
-url = underline
-nick = blue
+strong = "red"
+em = "teal"
+url = "underline"
+nick = "blue"
 
 [s3]
 accessKeyId = "<set-me>"
@@ -26,8 +26,9 @@ ignoreNicks = ["ChanServ", "Example"]
 rate = 2
 burst = 5
 
-[bing]
-accountKey = "<set-me>"
+[go]
+rate = 0.3
+burst = 2
 
 [bitly]
 accessToken = "<set-me>"

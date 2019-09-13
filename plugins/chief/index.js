@@ -11,8 +11,8 @@ const MESSAGE_CHANCE = 1 / 1000;
 const DAY = 60 * 60 * 24;
 
 const getRandomQuote = (source) => {
-  const index = Math.floor(source.quotes.length * Math.random());
-  return source.quotes[index];
+  const index = Math.floor(source.length * Math.random());
+  return source[index];
 };
 
 module.exports = ({style, help, match}) => {

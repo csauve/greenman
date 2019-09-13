@@ -2,7 +2,7 @@ const c = require("irc-colors");
 const R = require("ramda");
 const moment = require("moment");
 const {stripIndent} = require("common-tags");
-const getTitleAtUrl = require("url-to-title");
+//todo: getTitleAtUrl
 const getUrls = require("get-urls");
 const normalizeUrl = require("normalize-url");
 const async = require("async");
@@ -59,11 +59,6 @@ const saveLinks = (datastore, newLinks, maxSavedLinks, cb) => {
 };
 
 const parseUrlsFromText = (text) => Array.from(getUrls(text));
-
-//library doesn't trim -- also ignore errors
-const getLinkTitle = (url, cb) => {
-  getTitleAtUrl(url, (err, title) => cb(title ? title.trim() : null));
-};
 
 const formatTitle = (title, origLink) => {
   if (!title && !origLink) return null;
