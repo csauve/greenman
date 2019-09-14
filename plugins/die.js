@@ -1,3 +1,5 @@
+const DELAY = 2000;
+
 module.exports = ({style, help, match}) => {
   const messages = [
     style.green("Sir. Permission to leave the station."),
@@ -7,7 +9,8 @@ module.exports = ({style, help, match}) => {
     style.green("On Halo, you tried to kill Cortana. You tried to kill me."),
     style.green("So, stay here."),
     style.pink("Now would be a very good time to leave!"),
-    style.yellow("I am already dead.")
+    style.yellow("I am already dead."),
+    style.red("I'm too pretty to die!")
   ];
 
   help("die", `${style.em("!die")}: Shutdown the bot, which will restart and rejoin afterwards`);
@@ -15,10 +18,11 @@ module.exports = ({style, help, match}) => {
   const shutdown = (ctx) => {
     const msg = messages[Math.floor(Math.random() * messages.length)];
     ctx.say(msg);
-    //todo: too early
-    process.exit();
+    setTimeout(() => {
+      process.exit();
+    }, DELAY);
   };
 
-  match("!die", shutdown);
+  match(/^!die$/i, shutdown);
   match("^greenman go home|go home greenman", shutdown);
 };

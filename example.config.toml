@@ -1,6 +1,7 @@
 [bot]
 nick = "greenman"
 server = "irc.example.com"
+debug = false
 
 [bot.options]
 floodProtection = true
@@ -30,15 +31,12 @@ burst = 5
 rate = 0.3
 burst = 2
 
-[bitly]
-accessToken = "<set-me>"
-
 [wolfram]
 appId = "<set-me>"
 
 [links]
 maxSavedLinks = 500
-defaultDuration = "1d"
+bitlyAccessToken = "<set-me>"
 
 [eval]
 timeout = 200

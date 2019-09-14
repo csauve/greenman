@@ -2,10 +2,10 @@ const R = require("ramda");
 const uuid = require("uuid/v4");
 const {stripIndent} = require("common-tags");
 const moment = require("moment");
-const parseDuration = require("parse-duration");
+const parseDurationLib = require("parse-duration");
 const chrono = require("chrono-node");
 const lt = require("long-timeout");
-const {nicksMatch} = require("./common/nicks");
+const {nicksMatch} = require("../../lib/nicks");
 const {
   getMessages,
   setMessages,
@@ -20,7 +20,7 @@ const {
 const FILENAME = "tell.json";
 
 const parseDuration = (s) => {
-  const dur = parseDuration(s);
+  const dur = parseDurationLib(s);
   if (dur <= 0) return null;
   return dur + new Date().getTime();
 };
@@ -40,14 +40,14 @@ const formatDateRelative = (date) => {
   return moment(date).fromNow();
 };
 
-module.exports = (s3Store, {style, help, match, deliver}) => {
+module.exports = (s3Store, {style, help, match, deliver, filter}) => {
   const getState = (...args) => s3Store.getState(FILENAME, ...args);
   const saveState = (...args) => s3Store.saveState(FILENAME, ...args);
 
   const formatMessageForDelivery = ({recipient, sender, content, createdDate}) => {
     const from = nicksMatch(sender, recipient) ? "you" : sender;
     const ago = formatDateRelative(createdDate);
-    return `${style.em("(")}${style.nick(from)}${style.em(`, ${ago})`)} ${style.strong(content ? content : "*poke*")}`
+    return `${style.em("[from ")}${style.nick(from)}${style.em(`, ${ago}]`)} ${style.strong(content ? content : "*poke*")}`
   };
 
   const formatMessageForSender = (err, {recipient, sender, deliveryDate}) => {
@@ -86,7 +86,11 @@ module.exports = (s3Store, {style, help, match, deliver}) => {
 
   const scheduleDelivery = (message) => {
     lt.setTimeout(
-      () => doDelivery([message]),
+      () => doDelivery([message], (err) => {
+        if (err) {
+          console.error("Something broke while delivering on schedule: ", err);
+        }
+      }),
       Math.max(0, message.deliveryDate - new Date().getTime())
     );
   };
@@ -114,7 +118,7 @@ module.exports = (s3Store, {style, help, match, deliver}) => {
     const msg = {
       id: uuid(),
       content,
-      recipient: recipient == "me" ? sender : recipient,
+      recipient,
       sender,
       channel,
       deliveryDate: deliveryDate,
@@ -125,7 +129,7 @@ module.exports = (s3Store, {style, help, match, deliver}) => {
       const newState = addMessage(msg, state);
       saveState(newState, (err) => {
         if (err) return cb(err);
-        if (deliveryDate) scheduleDelivery(message);
+        if (deliveryDate) scheduleDelivery(msg);
         cb();
       });
     });
@@ -143,34 +147,42 @@ module.exports = (s3Store, {style, help, match, deliver}) => {
     e.g. ${style.em("\"!at 15:44:15 est poke me\"")}, ${style.em("\"!in 30m tell jcap buy a desk\"")}
   `);
 
-  match(".*", ({nick, channel, reply}) => {
-    checkMessages(nick, channel, (err) => {
+  filter(({nick, channel, reply}) => {
+    checkMessages(nick, channel, (err, messages) => {
       if (err) return console.error("Failed to check for messages: ", err);
       doDelivery(messages, (err) => {
         if (err) console.error("Failed to deliver messages: ", err);
       });
     });
+    return true;
   });
 
-  match(`^!(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ([recipient, content], ctx) => {
-    saveMessage(s3Store, bot, {
-      recipient: recipient || ctx.from,
+  match(/^!(?:tell|poke)(?:\s+(\S+):?)?(?:\s+(.+))?$/, ({nick, channel, reply}, [recipient, content]) => {
+    recipient = style.clear(recipient || nick);
+    recipient = recipient == "me" ? nick : recipient;
+    const msg = {
+      recipient,
       sender: nick,
       channel,
       content
+    };
+    saveMessage(msg, (err) => {
+      reply(formatMessageForSender(err, msg));
     });
   });
 
-  match(`^${config.global.prefix}(?:at|on)\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ({nick, channel}, match) => {
-    const deliveryDate = parseDate(match[1]);
+  match(/^!(?:at|on)\s+(.+)\s+(?:tell|poke)(?:\s+(\S+):?)?(?:\s+(.+))?$/, ({nick, channel, reply}, [date, recipient, content]) => {
+    const deliveryDate = date ? parseDate(style.clear(date)) : null;
     if (!deliveryDate) {
       return reply(`Please provide a date in a supported format: ${style.url("https://github.com/wanasit/chrono")}`);
     }
+    recipient = style.clear(recipient || nick);
+    recipient = recipient == "me" ? nick : recipient;
     const msg = {
-      recipient: match[2] || nick,
+      recipient,
       sender: nick,
       channel,
-      content: match[3],
+      content,
       deliveryDate
     };
     saveMessage(msg, (err) => {
@@ -178,16 +190,18 @@ module.exports = (s3Store, {style, help, match, deliver}) => {
     });
   });
 
-  match(`^!in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ({nick, channel, reply}, match) => {
-    const deliveryDate = parseDuration(match[1]);
+  match(`^!in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ({nick, channel, reply}, [date, recipient, content]) => {
+    const deliveryDate = parseDuration(date);
     if (!deliveryDate) {
       return reply(`Please provide a duration in a supported format: ${style.url("https://github.com/jkroso/parse-duration")}`);
     }
+    recipient = style.clear(recipient || nick);
+    recipient = recipient == "me" ? nick : recipient;
     const msg = {
-      recipient: match[2] || nick,
+      recipient,
       sender: nick,
       channel,
-      content: match[3],
+      content,
       deliveryDate
     };
     saveMessage(msg, (err) => {

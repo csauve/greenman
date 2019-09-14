@@ -2,7 +2,7 @@ const request = require("request");
 const xml2js = require("xml2js");
 const calmer = require("../lib/calmer");
 
-module.exports = (config, {help, match, style: {em, strong, clear}}) => {
+module.exports = (config, {help, match, style: {green, em, strong, clear}}) => {
   const calm = calmer(0.3, 5);
 
   help("wolfram", `${em("!wa <query>")}: Returns Wolfram Alpha results`);
@@ -38,7 +38,7 @@ module.exports = (config, {help, match, style: {em, strong, clear}}) => {
         });
       });
     } else {
-      ctx.reply("Slow down. You're losing me.")
+      ctx.reply(green("Slow down. You're losing me."));
     }
   });
 };

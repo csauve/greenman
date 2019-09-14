@@ -14,8 +14,8 @@ const searchWiby = (query, cb) => {
     result.pop();
     if (result.length == 0) return cb();
     cb(null, {
-      url: result[0].url,
-      title: result[0].title
+      url: result[0].url.trim(),
+      title: result[0].title.trim()
     });
   });
 };
@@ -25,7 +25,7 @@ const randomWiby = (cb) => {
     if (err) return cb(err);
     const $ = cheerio.load(body);
     const urlAttrib = $("head meta[http-equiv=refresh]").attr("content");
-    const url = urlAttrib.match(/^0; URL='(.+)'$/)[1];
+    const url = urlAttrib.match(/^0; URL='(.+)'$/)[1].trim();
     getLinkTitle(url, (title) => {
       cb(null, {url, title});
     });
@@ -42,7 +42,13 @@ const searchGoogle = (query, cb) => {
     }
     const url = URL.parse(firstResult.attr("href"), true).query.q;
     const title = firstResult.children().first().text();
-    cb(null, {url, title});
+    if (!title || title.length == 0) {
+      getTitleAtUrl(url, (title) => {
+        cb(null, {url, title});
+      });
+    } else {
+      cb(null, {url, title});
+    }
   });
 };
 

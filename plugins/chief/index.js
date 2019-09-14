@@ -15,7 +15,7 @@ const getRandomQuote = (source) => {
   return source[index];
 };
 
-module.exports = ({style, help, match}) => {
+module.exports = ({style, help, match, filter}) => {
   const calm = calmer(1 / DAY, 2);
 
   help("chief", stripIndent`
@@ -36,14 +36,14 @@ module.exports = ({style, help, match}) => {
   });
 
   match("^!johnson$", (ctx) => {
-    ctx.say(style.brown(getRandomQuote(johnson)));
+    ctx.say(style.red(getRandomQuote(johnson)));
   });
 
   match("^!spark$", (ctx) => {
     ctx.say(style.aqua(getRandomQuote(spark)));
   });
 
-  match(".*", (ctx) => {
+  filter((ctx) => {
     if (Math.random() < MESSAGE_CHANCE && calm(ctx.to)) {
       ctx.say(style.green(getRandomQuote(masterchief)));
     }
