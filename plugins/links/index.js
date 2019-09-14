@@ -3,7 +3,6 @@ const R = require("ramda");
 const moment = require("moment");
 const {stripIndent} = require("common-tags");
 const getUrls = require("get-urls");
-const BitlyAPI = require("node-bitlyapi");
 const calmer = require("../../lib/calmer");
 const {getLinkTitle} = require("../../lib/links");
 const {getLinks, setLinks, filterResults, findRepost, appendLink} = require("./state");

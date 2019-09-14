@@ -17,9 +17,10 @@ module.exports = (s3Store, {style, match, help}) => {
   const updateQuotes = (upd, cb) => {
     getState((err, state) => {
       if (err) return cb(err);
-      const newQuotes = upd(getQuotes(state));
+      const oldQuotes = getQuotes(state);
+      const newQuotes = upd(oldQuotes);
       saveState(setQuotes(newQuotes, state), (err) => {
-        cb(err, err ? null : newQuotes);
+        cb(err, err ? null : newQuotes, oldQuotes);
       });
     });
   };
@@ -65,8 +66,15 @@ module.exports = (s3Store, {style, match, help}) => {
   });
 
   match(/^!dq\s+(.+)$/i, ({reply}, [quote]) => {
-    updateQuotes(R.reject(quotesEqual(quote)), (err, newQuotes) => {
-      reply(err ? "(╯°□°)╯︵ ┻━┻" : `Quote deleted (${newQuotes.length} total)`);
+    updateQuotes(R.reject(quotesEqual(quote)), (err, newQuotes, oldQuotes) => {
+      if (err) {
+        console.error(err);
+        reply("(╯°□°)╯︵ ┻━┻");
+      } else if (oldQuotes && oldQuotes.length == newQuotes.length) {
+        reply(`No matching messages found`);
+      } else {
+        reply(`Quote deleted (${newQuotes.length} total)`);
+      }
     });
   });
 };
