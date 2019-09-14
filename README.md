@@ -1,6 +1,9 @@
 # gb-plugins-modacity
 This repo implements the #modacity greenman bot, built on the [node-greenman](https://github.com/csauve/node-greenman) library.
 
+//Todo
+npm install --save aws-sdk cheerio chrono-node common-tags get-urls irc irc-colors levenshtein long-timeout moment node-bitlyapi normalize-url parse-duration ramda request roll toml url url-to-title uuid vm2 xml2js
+
 ## Running the Bot
 Before running, you will need to copy `example.config.cson` to `config.cson` and make adjustments, including IRC client configuration and API keys. The bot runs in a [Docker](https://www.docker.com/) container which sets up all required dependencies. Once you've installed the [Docker Engine](https://docs.docker.com/engine/installation/):
 
@@ -53,16 +56,12 @@ docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 ```
 
 ## Todo / plugin ideas
-* Deprecate nogo
-* De-coffee
-* Deprecate mp3 converter?
-* Better error handling or logs
-* Shared S3 code
+
 * Logger
 * Image describer
 * MUD text adventure game
 * Nick impersonator (e.g. RNN, markov chain)
-* Identity module for user locales
+* Identity module for user locales and aliases
 
 ## License
 [MIT](http://opensource.org/licenses/mit-license.php)

@@ -3,19 +3,18 @@ const R = require("ramda");
 const moment = require("moment");
 const {stripIndent} = require("common-tags");
 const getUrls = require("get-urls");
-const normalizeUrl = require("normalize-url");
 const BitlyAPI = require("node-bitlyapi");
 const calmer = require("../../lib/calmer");
 const {getLinkTitle} = require("../../lib/links");
 const {getLinks, setLinks, filterResults, findRepost, appendLink} = require("./state");
+const bitly = require("./bitly");
 
 const FILENAME = "links.json";
 
 const parseUrlsFromText = (text) => Array.from(getUrls(text));
 
 module.exports = ({bitlyAccessToken, maxSavedLinks}, s3Store, {help, match, filter, style}) => {
-  const bitlyClient = new BitlyAPI({});
-  bitlyClient.setAccessToken(bitlyAccessToken);
+  const shorten = bitly(bitlyAccessToken);
   const calm = calmer(0.5, 2);
 
   const getState = (...args) => s3Store.getState(FILENAME, ...args);
@@ -32,17 +31,6 @@ module.exports = ({bitlyAccessToken, maxSavedLinks}, s3Store, {help, match, filt
       suffix = style.em(title.trim());
     }
     return prefix + suffix;
-  };
-
-  const shorten = (longUrl, callback) => {
-    const params = {
-      longUrl: normalizeUrl(longUrl).trim(),
-      format: "txt",
-      domain: "j.mp"
-    };
-    bitlyClient.shorten(params, (error, result) => {
-      callback(error, result ? result.trim() : null);
-    });
   };
 
   const getPostedLinks = (filters, cb) => {

@@ -24,5 +24,5 @@ module.exports = ({style, help, match}) => {
   };
 
   match(/^!die$/i, shutdown);
-  match("^greenman go home|go home greenman", shutdown);
+  match("^greenman:? go home|go home greenman\s?", shutdown);
 };
