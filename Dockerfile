@@ -5,4 +5,4 @@ WORKDIR /usr/local/greenman
 COPY . .
 RUN npm ci
 
-CMD ["node", "bot.js"]
+CMD ["node", "greenman.js"]
