@@ -1,5 +1,3 @@
-const {nicksMatch} = require("../../lib/nicks");
-
 const R = require("ramda");
 
 const getMessages = (state) =>
@@ -20,9 +18,9 @@ const clearMessage = (messageId, state) =>
 const clearMessages = (messageIds, state) =>
   R.reduce((s, id) => clearMessage(id, s), state, messageIds);
 
-const getUnscheduledMessagesFor = (liveRecipient, channel, state) => {
+const getUnscheduledMessagesFor = (liveRecipient, isAlias, channel, state) => {
   const predicate = (message) => (
-    nicksMatch(message.recipient, liveRecipient) &&
+    isAlias(message.recipient) &&
     (!message.channel || message.channel == channel) &&
     !message.deliveryDate
   );

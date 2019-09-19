@@ -107,10 +107,10 @@ module.exports = (s3Store, {style, help, match, deliver, filter}) => {
     });
   };
 
-  const checkMessages = (nick, channel, cb) => {
+  const checkMessages = (nick, isAlias, channel, cb) => {
     getState((err, state) => {
       if (err) return cb(err);
-      cb(null, getUnscheduledMessagesFor(nick, channel, state));
+      cb(null, getUnscheduledMessagesFor(nick, isAlias, channel, state));
     });
   };
 
@@ -147,8 +147,8 @@ module.exports = (s3Store, {style, help, match, deliver, filter}) => {
     e.g. ${style.em("\"!at 15:44:15 est poke me\"")}, ${style.em("\"!in 30m tell jcap buy a desk\"")}
   `);
 
-  filter(({nick, channel, reply}) => {
-    checkMessages(nick, channel, (err, messages) => {
+  filter(({nick, isAlias, channel, reply}) => {
+    checkMessages(nick, isAlias, channel, (err, messages) => {
       if (err) return console.error("Failed to check for messages: ", err);
       doDelivery(messages, (err) => {
         if (err) console.error("Failed to deliver messages: ", err);

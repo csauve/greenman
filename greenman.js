@@ -11,6 +11,7 @@ connect(config.bot, (bot) => {
   console.log("Initializing plugins");
 
   require("./plugins/filter")(config.filter, bot);
+  require("./plugins/aliases")(s3Store, bot);
   require("./plugins/chief")(bot);
   require("./plugins/roll")(bot);
   require("./plugins/hi")(config.bot, bot);

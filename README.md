@@ -10,6 +10,7 @@ An IRC bot for the #modacity community on GameSurge. There's a variety of featur
 * Link shortening
 * Web search
 * Activity-based and scheduled message delivery
+* Nick aliases for delivery
 * Execute sandboxed JS
 
 Greenman builds upon [node-irc](https://github.com/martynsmith/node-irc) with a message-handling chain architecture inspired by [express's middleware pattern](http://expressjs.com/).
