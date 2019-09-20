@@ -144,6 +144,7 @@ module.exports = (s3Store, {style, help, match, deliver, filter}) => {
     ${style.em(`!tell|poke [nick] [message]`)}: Messages <nick> when they next post
     ${style.em(`!at|on <date> tell|poke [nick] [message]`)}: Messages <nick> at <date>
     ${style.em(`!in <duration> tell|poke [nick] [message]`)}: Messages <nick> after <duration> has elapsed
+    ${style.em(`!in <duration>`)}: Pokes you after the <duration> has passed
     e.g. ${style.em("\"!at 15:44:15 est poke me\"")}, ${style.em("\"!in 30m tell jcap buy a desk\"")}
   `);
 
@@ -190,7 +191,7 @@ module.exports = (s3Store, {style, help, match, deliver, filter}) => {
     });
   });
 
-  match(`^!in\\s+(.+)\\s+(?:tell|poke)(?:\\s+(\\S+):?)?(?:\\s+(.+))?$`, ({nick, channel, reply}, [date, recipient, content]) => {
+  match(/^!in\s+(\d+\s*(?:s|m|h|d|y|secs?|seconds?|minutes?|hours?|days?|weeks?|months?|years?))(?:\s+(?:tell|poke)(?:\s+(\S+):?)?(?:\s+(.+))?)?$/i, ({nick, channel, reply}, [date, recipient, content]) => {
     const deliveryDate = parseDuration(date);
     if (!deliveryDate) {
       return reply(`Please provide a duration in a supported format: ${style.url("https://github.com/jkroso/parse-duration")}`);
