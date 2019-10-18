@@ -100,13 +100,10 @@ docker tag greenman:latest example.ecr.us-east-1.amazonaws.com/greenman:latest
 docker push example.ecr.us-east-1.amazonaws.com/greenman:latest
 ```
 
-## Todo / plugin ideas
+## Future work
 
 * Logger
-* Image describer
-* MUD text adventure game
-* Nick impersonator (e.g. RNN, markov chain)
-* Identity module for user locales and aliases
+* Idle games
 
 ## License
 [MIT](http://opensource.org/licenses/mit-license.php)
