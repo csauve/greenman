@@ -15,7 +15,7 @@
     "levenshtein": "^1.0.5",
     "long-timeout": "^0.1.1",
     "moment": "^2.24.0",
-    "normalize-url": "^4.3.0",
+    "normalize-url": "^4.5.1",
     "parse-duration": "^0.1.1",
     "ramda": "^0.26.1",
     "request": "^2.88.0",
